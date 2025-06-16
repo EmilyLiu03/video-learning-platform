@@ -1,0 +1,74 @@
+{
+  "terms": [
+    {
+      "id": 1,
+      "chinese": "本地化",
+      "english": "Localization",
+      "chineseDefinition": "将产品（如软件、网站、游戏等）适应特定地区或语言环境的过程",
+      "englishDefinition": "The process of adapting a product (such as software, websites, games) to a specific region or language"
+    },
+    {
+      "id": 2,
+      "chinese": "国际化",
+      "english": "Internationalization",
+      "chineseDefinition": "设计和开发产品时考虑到多语言和多文化支持的过程",
+      "englishDefinition": "The process of designing and developing a product to support multiple languages and cultures"
+    },
+    {
+      "id": 3,
+      "chinese": "翻译记忆库",
+      "english": "Translation Memory",
+      "chineseDefinition": "存储源文本及其对应译文的数据库，用于提高翻译效率和一致性",
+      "englishDefinition": "A database that stores source text and its corresponding translations to improve translation efficiency and consistency"
+    },
+    {
+      "id": 4,
+      "chinese": "术语库",
+      "english": "Terminology Database",
+      "chineseDefinition": "包含特定领域专业术语及其定义和翻译的集合",
+      "englishDefinition": "A collection of specialized terms in a specific field along with their definitions and translations"
+    },
+    {
+      "id": 5,
+      "chinese": "字幕",
+      "english": "Subtitles",
+      "chineseDefinition": "显示在视频底部的文本，通常是对话或旁白的翻译",
+      "englishDefinition": "Text displayed at the bottom of a video, typically a translation of dialogue or narration"
+    },
+    {
+      "id": 6,
+      "chinese": "配音",
+      "english": "Dubbing",
+      "chineseDefinition": "用目标语言的语音替换原始音频轨道的过程",
+      "englishDefinition": "The process of replacing the original audio track with voice in the target language"
+    },
+    {
+      "id": 7,
+      "chinese": "文化适应",
+      "english": "Cultural Adaptation",
+      "chineseDefinition": "调整内容以适应目标文化的习惯、价值观和敏感性",
+      "englishDefinition": "Adjusting content to fit the customs, values, and sensitivities of the target culture"
+    },
+    {
+      "id": 8,
+      "chinese": "语言资产",
+      "english": "Linguistic Assets",
+      "chineseDefinition": "翻译过程中创建和使用的资源，如术语库、翻译记忆库等",
+      "englishDefinition": "Resources created and used during the translation process, such as terminology databases and translation memories"
+    },
+    {
+      "id": 9,
+      "chinese": "计算机辅助翻译",
+      "english": "Computer-Assisted Translation (CAT)",
+      "chineseDefinition": "使用软件工具辅助人工翻译的过程",
+      "englishDefinition": "The process of using software tools to assist human translation"
+    },
+    {
+      "id": 10,
+      "chinese": "机器翻译",
+      "english": "Machine Translation (MT)",
+      "chineseDefinition": "使用计算机算法自动将文本从一种语言翻译成另一种语言",
+      "englishDefinition": "The automatic translation of text from one language to another using computer algorithms"
+    }
+  ]
+}

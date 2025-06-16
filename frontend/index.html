@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频学习平台 - 首页</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="src/css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="index.html">
+                    <h1>视频学习平台</h1>
+                </a>
+            </div>
+            <div class="navbar-search">
+                <input type="text" id="search-input" placeholder="搜索视频...">
+                <button id="search-btn">
+                    <span class="material-icons">search</span>
+                </button>
+            </div>
+            <div class="navbar-actions" id="navbar-actions">
+                <!-- 登录前显示 -->
+                <div class="guest-actions" id="guest-actions">
+                    <a href="src/pages/login.html" class="btn btn-primary">登录</a>
+                    <a href="src/pages/register.html" class="btn">注册</a>
+                </div>
+                <!-- 登录后显示 -->
+                <div class="user-actions" id="user-actions" style="display: none;">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn">退出</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="main-container">
+        <!-- 视频网格 -->
+        <section class="video-section">
+            <h2 class="section-title">推荐视频</h2>
+            <div class="video-grid" id="video-grid">
+                <!-- 视频卡片将通过JavaScript动态加载 -->
+                <div class="loading-spinner" id="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2023 视频学习平台 - 专注于本地化学习</p>
+        </div>
+    </footer>
+
+    <!-- 视频播放模态框 -->
+    <div class="modal" id="video-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-video-title">视频标题</h3>
+                <button class="close-btn" id="close-modal-btn">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="video-player-container">
+                    <video id="video-player" class="video-js vjs-big-play-centered" controls preload="auto" width="640" height="360">
+                        <p class="vjs-no-js">
+                            要查看此视频，请启用JavaScript，并考虑升级到支持HTML5视频的Web浏览器。
+                        </p>
+                    </video>
+                </div>
+                <!-- 术语库抽屉 -->
+                <div class="terminology-drawer" id="terminology-drawer">
+                    <div class="drawer-header">
+                        <h3>术语库</h3>
+                        <button class="toggle-drawer-btn" id="toggle-drawer-btn">
+                            <span class="material-icons">chevron_right</span>
+                        </button>
+                    </div>
+                    <div class="drawer-content">
+                        <div class="search-box">
+                            <input type="text" id="term-search" placeholder="搜索术语...">
+                        </div>
+                        <div class="terminology-list" id="terminology-list">
+                            <!-- 术语条目将通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video.js -->
+    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+    <!-- 自定义脚本 -->
+    <script src="src/js/auth.js"></script>
+    <script src="src/js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 视频学习平台</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <form class="auth-form" id="register-form">
+            <h2>注册</h2>
+            
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required minlength="3" maxlength="20">
+                <small>用户名长度为3-20个字符</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required minlength="6">
+                <small>密码至少6个字符</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password">确认密码</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            
+            <button type="submit" class="auth-btn">注册</button>
+            
+            <div class="auth-links">
+                <p>已有账号？<a href="login.html">立即登录</a></p>
+                <p><a href="../../index.html">返回首页</a></p>
+            </div>
+            
+            <div id="message" class="error-message" style="display: none;"></div>
+        </form>
+    </div>
+
+    <!-- 自定义脚本 -->
+    <script src="../js/auth.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const messageDiv = document.getElementById('message');
+            
+            // 验证输入
+            if (!username || !password || !confirmPassword) {
+                showMessage('请填写所有字段', 'error');
+                return;
+            }
+            
+            if (username.length < 3 || username.length > 20) {
+                showMessage('用户名长度必须为3-20个字符', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('密码至少需要6个字符', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            // 显示加载状态
+            const submitBtn = document.querySelector('.auth-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '注册中...';
+            submitBtn.disabled = true;
+            
+            try {
+                const result = await register(username, password);
+                
+                if (result.success) {
+                    showMessage('注册成功！正在跳转...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../../index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('注册失败，请稍后重试', 'error');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
