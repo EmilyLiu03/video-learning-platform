@@ -1,17 +1,12 @@
 // 全局变量
-let currentPlayer = null;
-let allVideos = [];
+let player = null;
 let allTerms = [];
 let filteredTerms = [];
 
 // DOM元素
-const videoGrid = document.getElementById('video-grid');
-const loadingSpinner = document.getElementById('loading-spinner');
-const searchInput = document.getElementById('search-input');
-const searchBtn = document.getElementById('search-btn');
-const videoModal = document.getElementById('video-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const modalVideoTitle = document.getElementById('modal-video-title');
+const videoTitle = document.getElementById('video-title');
+const videoMeta = document.getElementById('video-meta');
+const uploadDate = document.getElementById('upload-date');
 const terminologyDrawer = document.getElementById('terminology-drawer');
 const toggleDrawerBtn = document.getElementById('toggle-drawer-btn');
 const termSearch = document.getElementById('term-search');
@@ -27,8 +22,17 @@ function initializePage() {
     // 检查用户登录状态
     checkAuthStatus();
     
-    // 加载视频列表
-    loadVideos();
+    // 从URL获取视频ID
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get('id');
+    
+    if (!videoId) {
+        showError('未找到视频ID，请返回首页重试');
+        return;
+    }
+    
+    // 加载视频信息
+    loadVideo(videoId);
     
     // 加载术语库
     loadTerminology();
@@ -39,22 +43,6 @@ function initializePage() {
 
 // 绑定事件监听器
 function bindEventListeners() {
-    // 搜索功能
-    searchBtn.addEventListener('click', handleSearch);
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            handleSearch();
-        }
-    });
-    
-    // 模态框关闭
-    closeModalBtn.addEventListener('click', closeVideoModal);
-    videoModal.addEventListener('click', function(e) {
-        if (e.target === videoModal) {
-            closeVideoModal();
-        }
-    });
-    
     // 术语库抽屉切换
     toggleDrawerBtn.addEventListener('click', toggleTerminologyDrawer);
     
@@ -62,97 +50,39 @@ function bindEventListeners() {
     termSearch.addEventListener('input', function() {
         filterTerminology(this.value);
     });
-    
-    // ESC键关闭模态框
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && videoModal.style.display === 'flex') {
-            closeVideoModal();
-        }
-    });
 }
 
-// 加载视频列表
-async function loadVideos() {
+// 加载视频信息
+async function loadVideo(videoId) {
     try {
-        const response = await fetch('/api/video/list');
+        const response = await fetch(`/api/video/${videoId}`);
         const data = await response.json();
         
-        if (data.success) {
-            allVideos = data.videos;
-            renderVideoGrid(allVideos);
+        if (data.success && data.video) {
+            renderVideo(data.video);
         } else {
-            showError('加载视频列表失败');
+            showError('加载视频失败：' + (data.error || '未知错误'));
         }
     } catch (error) {
         console.error('加载视频失败:', error);
         showError('网络错误，请稍后重试');
-    } finally {
-        hideLoadingSpinner();
     }
 }
 
-// 渲染视频网格
-function renderVideoGrid(videos) {
-    videoGrid.innerHTML = '';
+// 渲染视频
+function renderVideo(video) {
+    // 设置页面标题
+    document.title = `${video.title} - 视频学习平台`;
     
-    if (videos.length === 0) {
-        videoGrid.innerHTML = `
-            <div class="no-videos">
-                <p>暂无视频内容</p>
-            </div>
-        `;
-        return;
-    }
-    
-    videos.forEach(video => {
-        const videoCard = createVideoCard(video);
-        videoGrid.appendChild(videoCard);
-    });
-}
-
-// 创建视频卡片
-function createVideoCard(video) {
-    const card = document.createElement('div');
-    card.className = 'video-card';
-    card.setAttribute('data-video-id', video.id);
+    // 设置视频信息
+    videoTitle.textContent = video.title;
     
     // 格式化上传时间
-    const uploadDate = new Date(video.uploadTime);
-    const formattedDate = formatDate(uploadDate);
-    
-    card.innerHTML = `
-        <div class="video-thumbnail">
-            <img src="${video.coverUrl || 'https://via.placeholder.com/320x180?text=视频缩略图'}" alt="${video.title}">
-            <div class="play-overlay">
-                <span class="material-icons">play_arrow</span>
-            </div>
-        </div>
-        <div class="video-info">
-            <h3 class="video-title">${video.title}</h3>
-            <div class="video-meta">
-                <span>${formattedDate}</span>
-            </div>
-        </div>
-    `;
-    
-    // 添加点击事件 - 修改为跳转到视频播放页面
-    card.addEventListener('click', () => {
-        window.location.href = `src/pages/player.html?id=${video.id}`;
-    });
-    
-    return card;
-}
-
-// 播放视频
-function playVideo(video) {
-    modalVideoTitle.textContent = video.title;
+    const uploadDateObj = new Date(video.uploadTime);
+    uploadDate.textContent = formatDate(uploadDateObj);
     
     // 初始化Video.js播放器
-    if (currentPlayer) {
-        currentPlayer.dispose();
-    }
-    
-    currentPlayer = videojs('video-player', {
+    player = videojs('video-player', {
         controls: true,
         responsive: true,
         fluid: true,
@@ -162,41 +92,11 @@ function playVideo(video) {
         }]
     });
     
-    // 显示模态框
-    videoModal.style.display = 'flex';
-    
     // 播放视频
-    currentPlayer.ready(() => {
-        currentPlayer.play();
+    player.ready(() => {
+        // 自动播放可能会被浏览器阻止，所以不设置自动播放
+        // player.play();
     });
-}
-
-// 关闭视频模态框
-function closeVideoModal() {
-    if (currentPlayer) {
-        currentPlayer.pause();
-        currentPlayer.dispose();
-        currentPlayer = null;
-    }
-    
-    videoModal.style.display = 'none';
-}
-
-// 处理搜索
-function handleSearch() {
-    const keyword = searchInput.value.trim();
-    
-    if (keyword === '') {
-        renderVideoGrid(allVideos);
-        return;
-    }
-    
-    const filteredVideos = allVideos.filter(video => 
-        video.title.toLowerCase().includes(keyword.toLowerCase()) ||
-        (video.description && video.description.toLowerCase().includes(keyword.toLowerCase()))
-    );
-    
-    renderVideoGrid(filteredVideos);
 }
 
 // 加载术语库
@@ -298,18 +198,15 @@ function formatDate(date) {
     }
 }
 
-// 隐藏加载动画
-function hideLoadingSpinner() {
-    if (loadingSpinner) {
-        loadingSpinner.style.display = 'none';
-    }
-}
-
 // 显示错误信息
 function showError(message) {
-    videoGrid.innerHTML = `
-        <div class="error-message">
+    const container = document.querySelector('.player-container');
+    container.innerHTML = `
+        <div class="error-message" style="text-align: center; padding: 40px;">
             <p>${message}</p>
+            <a href="../../index.html" class="btn btn-primary" style="margin-top: 20px;">
+                返回首页
+            </a>
         </div>
     `;
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频播放 - 视频学习平台</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+    <!-- 自定义样式 -->
+    <link href="../css/styles.css" rel="stylesheet">
+    <style>
+        .player-container {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 20px;
+        }
+        
+        .video-info {
+            margin-bottom: 20px;
+        }
+        
+        .video-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .video-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .player-wrapper {
+            display: flex;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .video-player-container {
+            flex: 1;
+            background-color: #000;
+        }
+        
+        .video-js {
+            width: 100%;
+            height: 0;
+            padding-top: 56.25%; /* 16:9比例 */
+        }
+        
+        @media (max-width: 768px) {
+            .player-wrapper {
+                flex-direction: column;
+            }
+            
+            .terminology-drawer {
+                width: 100%;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <a href="../../index.html">
+                    <h1>7-day 速成前端魔法师</h1>
+                </a>
+            </div>
+            <div class="navbar-actions" id="navbar-actions">
+                <!-- 登录前显示 -->
+                <div class="guest-actions" id="guest-actions">
+                    <a href="login.html" class="btn btn-primary">登录</a>
+                    <a href="register.html" class="btn">注册</a>
+                </div>
+                <!-- 登录后显示 -->
+                <div class="user-actions" id="user-actions" style="display: none;">
+                    <span id="username-display"></span>
+                    <button id="logout-btn" class="btn">退出</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="player-container">
+        <div class="video-info">
+            <h1 class="video-title" id="video-title">视频标题</h1>
+            <div class="video-meta" id="video-meta">
+                <span id="upload-date"></span>
+            </div>
+            <a href="../../index.html" class="btn">
+                <span class="material-icons" style="font-size: 16px; margin-right: 4px;">arrow_back</span>
+                返回首页
+            </a>
+        </div>
+        
+        <div class="player-wrapper">
+            <div class="video-player-container">
+                <video id="video-player" class="video-js vjs-big-play-centered" controls preload="auto">
+                    <p class="vjs-no-js">
+                        要查看此视频，请启用JavaScript，并考虑升级到支持HTML5视频的Web浏览器。
+                    </p>
+                </video>
+            </div>
+            
+            <!-- 术语库抽屉 -->
+            <div class="terminology-drawer" id="terminology-drawer">
+                <div class="drawer-header">
+                    <h3>术语库</h3>
+                    <button class="toggle-drawer-btn" id="toggle-drawer-btn">
+                        <span class="material-icons">chevron_right</span>
+                    </button>
+                </div>
+                <div class="drawer-content">
+                    <div class="search-box">
+                        <input type="text" id="term-search" placeholder="搜索术语...">
+                    </div>
+                    <div class="terminology-list" id="terminology-list">
+                        <!-- 术语条目将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2023 视频学习平台 - 专注于本地化学习</p>
+        </div>
+    </footer>
+
+    <!-- Video.js -->
+    <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
+    <!-- 自定义脚本 -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/player.js"></script>
+</body>
+</html>

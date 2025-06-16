@@ -90,25 +90,17 @@ router.get('/list', (req, res) => {
     }
 });
 
-// 根据ID获取单个视频信息
+// 获取单个视频信息
 router.get('/:id', (req, res) => {
-    try {
-        const videoId = req.params.id;
-        const videoData = readVideos();
-        
-        const video = videoData.videos.find(v => v.id === videoId);
-        
-        if (!video) {
-            return res.status(404).json({ success: false, error: '视频未找到' });
-        }
-        
-        res.json({
-            success: true,
-            video: video
-        });
-    } catch (error) {
-        console.error('获取视频信息失败:', error);
-        res.status(500).json({ success: false, error: '获取视频信息失败' });
+    const videoId = req.params.id;
+    const data = readVideos();
+    
+    const video = data.videos.find(v => v.id === videoId);
+    
+    if (video) {
+        res.json({ success: true, video });
+    } else {
+        res.status(404).json({ success: false, error: '视频不存在' });
     }
 });
 
