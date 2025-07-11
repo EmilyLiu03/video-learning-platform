@@ -2,141 +2,235 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 const path = require('path');
-const { verifyToken } = require('./auth');
+const crypto = require('crypto');
 
-// 视频数据文件路径
-const videosFilePath = path.join(__dirname, '../data/videos.json');
-const terminologyFilePath = path.join(__dirname, '../data/terminology.json');
+// 腾讯云配置信息（请替换为您的真实配置）
+const tencentConfig = {
+    appId: "1329006807",
+    secretId: "AKIDVyFSSAmDWgkgTTTIwNbbOyFLGyTkofIh", 
+    secretKey: "FH5gKo5Z5gJl26zhDcrwoSt8D4kGZeWB"
+};
 
-// 确保数据目录和文件存在
-const dataDir = path.join(__dirname, '../data');
-if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+// 腾讯云签名生成类（基于官方Java代码转换）
+class TencentSignature {
+    constructor(secretId, secretKey) {
+        this.secretId = secretId;
+        this.secretKey = secretKey;
+        this.currentTime = Math.floor(Date.now() / 1000);
+        this.random = Math.floor(Math.random() * Math.pow(2, 31));
+        this.signValidDuration = 3600 * 24 * 2; // 签名有效期：2天
+    }
+    
+    // 生成上传签名
+    getUploadSignature() {
+        try {
+            // 生成原始参数字符串
+            const endTime = this.currentTime + this.signValidDuration;
+            let contextStr = '';
+            contextStr += `secretId=${encodeURIComponent(this.secretId)}`;
+            contextStr += `&currentTimeStamp=${this.currentTime}`;
+            contextStr += `&expireTime=${endTime}`;
+            contextStr += `&random=${this.random}`;
+            
+            console.log('签名原始字符串:', contextStr);
+            
+            // 使用HMAC-SHA1算法生成签名
+            const hmac = crypto.createHmac('sha1', this.secretKey);
+            hmac.update(contextStr, 'utf8');
+            const hash = hmac.digest();
+            
+            // 将hash和原始字符串合并
+            const contextBuffer = Buffer.from(contextStr, 'utf8');
+            const sigBuf = Buffer.concat([hash, contextBuffer]);
+            
+            // Base64编码
+            let signature = sigBuf.toString('base64');
+            signature = signature.replace(/\s/g, ''); // 移除空格、换行符等
+            
+            console.log('生成的签名:', signature);
+            return signature;
+            
+        } catch (error) {
+            console.error('签名生成失败:', error);
+            throw error;
+        }
+    }
 }
 
-if (!fs.existsSync(videosFilePath)) {
-    fs.writeFileSync(videosFilePath, JSON.stringify({ videos: [] }), 'utf8');
-}
-
-if (!fs.existsSync(terminologyFilePath)) {
-    // 创建示例术语库
-    const sampleTerminology = {
-        terms: [
-            {
-                id: 1,
-                chinese: "人工智能",
-                english: "Artificial Intelligence",
-                chineseDefinition: "由人制造出来的机器所表现出来的智能",
-                englishDefinition: "Intelligence demonstrated by machines"
-            },
-            {
-                id: 2,
-                chinese: "机器学习",
-                english: "Machine Learning",
-                chineseDefinition: "一种实现人工智能的方法，通过算法让计算机从数据中学习",
-                englishDefinition: "A method of achieving artificial intelligence through algorithms that enable computers to learn from data"
-            },
-            {
-                id: 3,
-                chinese: "深度学习",
-                english: "Deep Learning",
-                chineseDefinition: "机器学习的一个分支，使用多层神经网络进行学习",
-                englishDefinition: "A subset of machine learning that uses multi-layered neural networks for learning"
-            }
-        ]
-    };
-    fs.writeFileSync(terminologyFilePath, JSON.stringify(sampleTerminology, null, 2), 'utf8');
-}
+// 数据文件路径
+const dataFilePath = path.join(__dirname, '../data/videos.json');
 
 // 读取视频数据
 function readVideos() {
     try {
-        const data = fs.readFileSync(videosFilePath, 'utf8');
-        return JSON.parse(data);
+        if (fs.existsSync(dataFilePath)) {
+            const data = fs.readFileSync(dataFilePath, 'utf8');
+            const jsonData = JSON.parse(data);
+            // 如果数据结构是 {videos: [...]}，返回videos数组
+            if (jsonData.videos && Array.isArray(jsonData.videos)) {
+                return jsonData.videos;
+            }
+            // 如果数据结构直接是数组，直接返回
+            if (Array.isArray(jsonData)) {
+                return jsonData;
+            }
+            // 其他情况返回空数组
+            return [];
+        }
+        return [];
     } catch (error) {
         console.error('读取视频数据失败:', error);
-        return { videos: [] };
+        return [];
     }
 }
 
-// 读取术语库数据
-function readTerminology() {
+// 写入视频数据
+function writeVideos(videos) {
     try {
-        const data = fs.readFileSync(terminologyFilePath, 'utf8');
-        return JSON.parse(data);
+        const dataDir = path.dirname(dataFilePath);
+        if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+        }
+        // 保持原有的数据结构格式 {videos: [...]}
+        const dataToWrite = {
+            videos: videos
+        };
+        fs.writeFileSync(dataFilePath, JSON.stringify(dataToWrite, null, 2));
     } catch (error) {
-        console.error('读取术语库数据失败:', error);
-        return { terms: [] };
+        console.error('写入视频数据失败:', error);
+        throw error;
     }
 }
 
-// 获取所有视频列表（首页展示）
-router.get('/list', (req, res) => {
+// 获取腾讯云上传签名
+router.post('/upload-signature', (req, res) => {
     try {
-        const videoData = readVideos();
+        console.log('收到上传签名请求');
         
-        // 返回视频列表，按上传时间倒序排列
-        const sortedVideos = videoData.videos.sort((a, b) => 
-            new Date(b.uploadTime) - new Date(a.uploadTime)
+        // 创建签名生成器
+        const signature = new TencentSignature(
+            tencentConfig.secretId,
+            tencentConfig.secretKey
         );
+        
+        // 生成签名
+        const uploadSignature = signature.getUploadSignature();
+        
+        console.log('签名生成成功');
         
         res.json({
             success: true,
-            videos: sortedVideos
+            signature: uploadSignature,
+            appId: tencentConfig.appId
         });
+        
+    } catch (error) {
+        console.error('生成上传签名失败:', error);
+        res.json({
+            success: false,
+            error: '生成上传签名失败: ' + error.message
+        });
+    }
+});
+
+// 保存用户上传的视频信息
+router.post('/save-video', (req, res) => {
+    try {
+        const { userId, title, description, fileId, videoUrl } = req.body;
+        
+        console.log('保存视频信息请求:', { userId, title, description, fileId, videoUrl });
+        
+        if (!userId || !title || !fileId || !videoUrl) {
+            return res.json({
+                success: false,
+                error: '缺少必要参数'
+            });
+        }
+        
+        // 创建视频数据对象
+        const videoData = {
+            id: Date.now().toString(),
+            userId,
+            title,
+            description: description || '',
+            fileId,
+            videoUrl,
+            uploadDate: new Date().toISOString(),
+            source: 'tencent_vod' // 标记为腾讯云VOD上传
+        };
+        
+        // 读取现有视频数据
+        const videos = readVideos();
+        videos.push(videoData);
+        
+        // 保存视频数据
+        writeVideos(videos);
+        
+        console.log('视频信息保存成功:', videoData);
+        
+        res.json({
+            success: true,
+            message: '视频信息保存成功',
+            video: videoData
+        });
+        
+    } catch (error) {
+        console.error('保存视频信息失败:', error);
+        res.json({
+            success: false,
+            error: '保存视频信息失败: ' + error.message
+        });
+    }
+});
+
+// 获取视频列表
+router.get('/list', (req, res) => {
+    try {
+        const videos = readVideos();
+        
+        // 按上传时间倒序排列
+        videos.sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+        
+        res.json({
+            success: true,
+            videos: videos
+        });
+        
     } catch (error) {
         console.error('获取视频列表失败:', error);
-        res.status(500).json({ success: false, error: '获取视频列表失败' });
+        res.json({
+            success: false,
+            error: '获取视频列表失败: ' + error.message
+        });
     }
 });
 
 // 获取单个视频信息
 router.get('/:id', (req, res) => {
-    const videoId = req.params.id;
-    const data = readVideos();
-    
-    const video = data.videos.find(v => v.id === videoId);
-    
-    if (video) {
-        res.json({ success: true, video });
-    } else {
-        res.status(404).json({ success: false, error: '视频不存在' });
-    }
-});
-
-// 获取术语库
-router.get('/terminology/list', (req, res) => {
     try {
-        const terminologyData = readTerminology();
+        const videoId = req.params.id;
+        const videos = readVideos();
         
-        res.json({
-            success: true,
-            terms: terminologyData.terms
-        });
+        const video = videos.find(v => v.id === videoId);
+        
+        if (video) {
+            res.json({
+                success: true,
+                video: video
+            });
+        } else {
+            res.json({
+                success: false,
+                error: '视频不存在'
+            });
+        }
+        
     } catch (error) {
-        console.error('获取术语库失败:', error);
-        res.status(500).json({ success: false, error: '获取术语库失败' });
-    }
-});
-
-// 搜索视频
-router.get('/search/:keyword', (req, res) => {
-    try {
-        const keyword = req.params.keyword.toLowerCase();
-        const videoData = readVideos();
-        
-        const filteredVideos = videoData.videos.filter(video => 
-            video.title.toLowerCase().includes(keyword) ||
-            (video.description && video.description.toLowerCase().includes(keyword))
-        );
-        
+        console.error('获取视频信息失败:', error);
         res.json({
-            success: true,
-            videos: filteredVideos
+            success: false,
+            error: '获取视频信息失败: ' + error.message
         });
-    } catch (error) {
-        console.error('搜索视频失败:', error);
-        res.status(500).json({ success: false, error: '搜索视频失败' });
     }
 });
 

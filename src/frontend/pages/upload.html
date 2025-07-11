@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频上传 - 七天速成前端魔法师</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- 腾讯云VOD SDK - 官方CDN -->
+    <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
+    
+    <!-- 魔法主题样式 -->
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <style>
+        .upload-page {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #463083 0%, #6941AB 100%);
+            padding: 20px;
+        }
+        
+        .magic-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(42, 16, 48, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            z-index: 100;
+            border-bottom: 2px solid rgba(253, 230, 21, 0.3);
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-title {
+            font-size: 24px;
+            color: #F4ECC8;
+            font-family: 'Long Cang', 'Uncial Antiqua', cursive;
+            text-shadow: 0 0 10px rgba(253, 230, 21, 0.5);
+        }
+        
+        .back-btn {
+            background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 20px;
+            color: #161414;
+            text-decoration: none;
+            font-weight: bold;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 214, 109, 0.3);
+        }
+        
+        .upload-container {
+            max-width: 800px;
+            margin: 100px auto 0;
+            background: rgba(244, 236, 200, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            border: 2px solid rgba(253, 230, 21, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .upload-header h1 {
+            color: #F4ECC8;
+            font-family: 'Zcool Qing Ke Huang You', 'Kalam', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(253, 230, 21, 0.6);
+        }
+        
+        .upload-header p {
+            color: #B8A082;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+        
+        .upload-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #F4ECC8;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(253, 230, 21, 0.3);
+            border-radius: 12px;
+            background: rgba(244, 236, 200, 0.1);
+            color: #F4ECC8;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(253, 230, 21, 0.8);
+            box-shadow: 0 0 15px rgba(253, 230, 21, 0.3);
+            background: rgba(244, 236, 200, 0.15);
+        }
+        
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #B8A082;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 30px;
+            border: 3px dashed rgba(253, 230, 21, 0.4);
+            border-radius: 15px;
+            background: rgba(244, 236, 200, 0.05);
+            color: #B8A082;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 120px;
+        }
+        
+        .file-input-display:hover {
+            border-color: rgba(253, 230, 21, 0.7);
+            background: rgba(253, 230, 21, 0.1);
+            color: #F4ECC8;
+            transform: translateY(-2px);
+        }
+        
+        .file-input-display.has-file {
+            border-color: rgba(253, 230, 21, 0.8);
+            background: rgba(253, 230, 21, 0.15);
+            color: #F4ECC8;
+        }
+        
+        .file-input-display .material-icons {
+            font-size: 32px;
+        }
+        
+        .file-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        .upload-progress {
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(244, 236, 200, 0.2);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 1px solid rgba(253, 230, 21, 0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD66D 0%, #EEAD08 100%);
+            border-radius: 6px;
+            transition: width 0.3s;
+            width: 0%;
+            box-shadow: 0 0 10px rgba(255, 214, 109, 0.5);
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #F4ECC8;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .upload-btn,
+        .cancel-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            min-width: 150px;
+            justify-content: center;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+            color: #161414;
+            box-shadow: 0 4px 15px rgba(255, 214, 109, 0.3);
+        }
+        
+        .upload-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 214, 109, 0.4);
+        }
+        
+        .upload-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .cancel-btn {
+            background: rgba(244, 236, 200, 0.1);
+            color: #F4ECC8;
+            border: 2px solid rgba(253, 230, 21, 0.3);
+        }
+        
+        .cancel-btn:hover {
+            background: rgba(253, 230, 21, 0.1);
+            border-color: rgba(253, 230, 21, 0.6);
+            transform: translateY(-3px);
+        }
+        
+        .success-message {
+            text-align: center;
+            padding: 30px;
+            color: #F4ECC8;
+            display: none;
+        }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        
+        .success-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px solid rgba(244, 67, 54, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #ffcdd2;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .upload-container {
+                margin-top: 80px;
+                padding: 25px;
+            }
+            
+            .upload-header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .upload-btn,
+            .cancel-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .file-input-display {
+                padding: 20px;
+                min-height: 100px;
+            }
+        }
+    </style>
+</head>
+<body class="magic-bg">
+    <!-- 魔法导航栏 -->
+    <nav class="magic-nav">
+        <div class="nav-content">
+            <h1 class="nav-title">七天速成前端魔法师</h1>
+            <a href="index.html" class="back-btn">
+                <span class="material-icons" style="font-size: 16px;">arrow_back</span>
+                返回首页
+            </a>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="upload-page">
+        <main class="upload-container">
+            <div class="upload-header">
+                <h1>🎬 上传您的魔法视频</h1>
+                <p>支持MP4、AVI、MOV格式，文件大小不超过500MB</p>
+            </div>
+            
+            <div class="upload-form" id="upload-form">
+                <div class="form-group">
+                    <label for="video-title-input">视频标题 *</label>
+                    <input type="text" id="video-title-input" placeholder="请输入一个吸引人的视频标题" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="video-description-input">视频描述</label>
+                    <textarea id="video-description-input" placeholder="请描述您的视频内容，让观众更好地了解（可选）" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="video-file-input">选择视频文件 *</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="video-file-input" accept="video/mp4,video/avi,video/mov" required>
+                        <div class="file-input-display" id="file-input-display">
+                            <span class="material-icons">cloud_upload</span>
+                            <span class="file-text">点击选择视频文件或拖拽文件到此处</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="upload-progress" id="upload-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">准备上传...</div>
+                </div>
+                
+                <div class="error-message" id="error-message"></div>
+                
+                <div class="form-actions">
+                    <button type="button" id="upload-btn" class="upload-btn" disabled>
+                        <span class="material-icons">publish</span>
+                        开始上传
+                    </button>
+                    <button type="button" id="cancel-btn" class="cancel-btn">
+                        <span class="material-icons">cancel</span>
+                        取消
+                    </button>
+                </div>
+            </div>
+            
+            <div class="success-message" id="success-message">
+                <div class="success-icon">✨</div>
+                <div class="success-text">视频上传成功！正在跳转到播放页面...</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 检测SDK加载状态 -->
+    <script>
+        window.addEventListener('load', function() {
+            console.log('页面加载完成');
+            console.log('TcVod是否可用:', typeof TcVod !== 'undefined');
+            if (typeof TcVod !== 'undefined') {
+                console.log('TcVod对象:', TcVod);
+            } else {
+                console.error('TcVod未定义，SDK可能加载失败');
+            }
+        });
+    </script>
+    
+    <!-- 上传功能脚本 -->
+    <script src="../js/upload.js"></script>
+</body>
+</html>
