@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的视频 - 七天速成前端魔法师</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="../assets/css/videos.css">
 </head>
@@ -42,6 +44,10 @@
                 <input type="text" id="search-input" class="search-input" placeholder="搜索我的视频...">
                 <button class="search-btn" onclick="searchVideos()">
                     <span class="search-icon">🔍</span>
+                </button>
+                <button class="upload-btn" onclick="goToUpload()">
+                    <span class="material-icons">add</span>
+                    上传视频
                 </button>
             </div>
             <div class="filter-buttons">
@@ -269,6 +275,11 @@
             } else {
                 return date.toLocaleDateString('zh-CN');
             }
+        }
+
+        // 跳转到上传页面（player.html）
+        function goToUpload() {
+            window.location.href = 'player.html';
         }
 
         // 添加星星闪烁动画

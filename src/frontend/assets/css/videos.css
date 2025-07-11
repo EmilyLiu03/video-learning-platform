@@ -126,6 +126,8 @@
 .search-container {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
@@ -153,17 +155,48 @@
 }
 
 .search-btn {
-    margin-left: 10px;
     width: 50px;
     height: 50px;
-    background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+    background: linear-gradient(180deg, #9371C9 0%, #6941AB 100%);
     border: none;
     border-radius: 25px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(147, 113, 201, 0.4);
+}
+
+/* 上传按钮样式 */
+.upload-btn {
+    background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    color: #161414;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    white-space: nowrap;
+    font-family: 'Noto Sans SC', 'Kalam', sans-serif;
+}
+
+.upload-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 214, 109, 0.4);
+}
+
+.upload-btn .material-icons {
+    font-size: 18px;
 }
 
 .search-btn:hover {
@@ -489,6 +522,18 @@
     }
 }
 
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .upload-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 @media (max-width: 480px) {
     .videos-grid {
         grid-template-columns: 1fr;
@@ -506,8 +551,9 @@
         max-width: 300px;
     }
     
-    .search-btn {
-        margin-left: 0;
+    .upload-btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
