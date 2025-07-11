@@ -399,4 +399,31 @@
     .content-title {
         font-size: 44px;
     }
-} 
+
+/* 认证按钮样式 */
+.auth-link {
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.auth-link:hover {
+    background: rgba(253, 230, 21, 0.1);
+    border-color: #FDE615;
+    transform: translateY(-1px);
+}
+
+.signup-btn {
+    background: linear-gradient(135deg, #FFD66D 0%, #EEAD08 100%);
+    color: #161414 !important;
+    font-weight: 500;
+    border: none;
+}
+
+.signup-btn:hover {
+    background: linear-gradient(135deg, #FDE615 0%, #F87800 100%);
+    color: #161414 !important;
+    box-shadow: 0 3px 10px rgba(255, 214, 109, 0.4);
+}
+}
