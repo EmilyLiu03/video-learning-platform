@@ -113,7 +113,7 @@
             height: 500px;
         }
         
-        .terminology-drawer {
+        .subtitle-drawer {
             width: 350px;
             background: rgba(147, 113, 201, 0.9);
             border-left: 2px solid rgba(253, 230, 21, 0.3);
@@ -155,57 +155,98 @@
             overflow-y: auto;
         }
         
-        .search-box input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid rgba(253, 230, 21, 0.3);
+        .subtitle-upload {
+            margin-bottom: 20px;
+        }
+        
+        .subtitle-upload-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+            color: #161414;
+            border: none;
             border-radius: 10px;
-            background: rgba(244, 236, 200, 0.1);
-            color: #F4ECC8;
-            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            justify-content: center;
         }
         
-        .search-box input::placeholder {
-            color: #B8A082;
+        .subtitle-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 214, 109, 0.3);
         }
         
-        .terminology-list {
+        .subtitle-list {
             max-height: 400px;
-            overflow-y: auto;
+            overflow: hidden;
+            position: relative;
         }
         
-        .term-item {
+        .subtitle-scroll-container {
+            transition: transform 0.3s ease;
+        }
+        
+        .subtitle-item {
             background: rgba(244, 236, 200, 0.1);
             border: 1px solid rgba(253, 230, 21, 0.2);
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
         
-        .term-item:hover {
+        .subtitle-item:hover {
             background: rgba(253, 230, 21, 0.15);
             border-color: rgba(253, 230, 21, 0.6);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
         
-        .term-chinese {
-            font-size: 1.1rem;
-            color: #F4ECC8;
-            font-weight: bold;
-            margin-bottom: 5px;
+        .subtitle-item.active {
+            background: rgba(253, 230, 21, 0.25);
+            border-color: rgba(253, 230, 21, 0.8);
+            box-shadow: 0 0 10px rgba(253, 230, 21, 0.3);
         }
         
-        .term-english {
-            font-size: 0.9rem;
+        .subtitle-item.passed {
+            opacity: 0.6;
+        }
+        
+        .subtitle-item.upcoming {
+            opacity: 0.8;
+        }
+        
+        .subtitle-item .time {
+            font-size: 0.8rem;
             color: #B8A082;
-            font-style: italic;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
+            font-family: monospace;
         }
         
-        .term-definition {
-            font-size: 0.85rem;
-            color: #D4C4A8;
+        .subtitle-item .text {
+            font-size: 0.9rem;
+            color: #F4ECC8;
+            line-height: 1.4;
+        }
+        
+        .no-subtitles {
+            text-align: center;
+            color: #B8A082;
+            padding: 40px 20px;
+        }
+        
+        .no-subtitles .material-icons {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+        
+        .no-subtitles p {
+            font-size: 0.9rem;
             line-height: 1.4;
         }
         
@@ -423,15 +464,15 @@
         }
         
         /* 抽屉折叠状态 */
-        .terminology-drawer.collapsed {
+        .subtitle-drawer.collapsed {
             width: 60px;
         }
         
-        .terminology-drawer.collapsed .drawer-content {
+        .subtitle-drawer.collapsed .drawer-content {
             display: none;
         }
         
-        .terminology-drawer.collapsed .drawer-header h3 {
+        .subtitle-drawer.collapsed .drawer-header h3 {
             display: none;
         }
         
@@ -496,24 +537,17 @@
             transform: translateY(-2px);
         }
         
-        .no-terms {
-            text-align: center;
-            color: #B8A082;
-            padding: 20px;
-            font-style: italic;
-        }
-        
         @media (max-width: 768px) {
             .player-wrapper {
                 flex-direction: column;
             }
             
-            .terminology-drawer {
+            .subtitle-drawer {
                 width: 100%;
                 max-height: 300px;
             }
             
-            .terminology-drawer.collapsed {
+            .subtitle-drawer.collapsed {
                 width: 100%;
                 max-height: 60px;
             }
@@ -571,20 +605,29 @@
                     </video>
                 </div>
                 
-                <!-- 术语库抽屉 -->
-                <div class="terminology-drawer" id="terminology-drawer">
+                <!-- 字幕面板 -->
+                <div class="subtitle-drawer" id="subtitle-drawer">
                     <div class="drawer-header">
-                        <h3>🔮 魔法术语库</h3>
+                        <h3>📝 字幕同步</h3>
                         <button class="toggle-drawer-btn" id="toggle-drawer-btn">
                             <span class="material-icons">chevron_right</span>
                         </button>
                     </div>
                     <div class="drawer-content">
-                        <div class="search-box">
-                            <input type="text" id="term-search" placeholder="搜索魔法术语...">
+                        <div class="subtitle-upload">
+                            <label for="subtitle-file" class="subtitle-upload-btn">
+                                <span class="material-icons">upload_file</span>
+                                上传字幕文件
+                            </label>
+                            <input type="file" id="subtitle-file" accept=".srt,.vtt" style="display: none;">
                         </div>
-                        <div class="terminology-list" id="terminology-list">
-                            <!-- 术语条目将通过JavaScript动态加载 -->
+                        <div class="subtitle-panel">
+                            <div id="subtitle-list" class="subtitle-list">
+                                <div class="no-subtitles">
+                                    <span class="material-icons">subtitles</span>
+                                    <p>请上传字幕文件以启用字幕同步功能</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

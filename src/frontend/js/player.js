@@ -3,14 +3,15 @@ class VideoPlayer {
     constructor() {
         this.player = null;
         this.currentVideoId = null;
-        this.terminology = [];
+        this.subtitles = [];
+        this.currentSubtitleIndex = -1;
         this.init();
     }
 
     init() {
         this.initPlayer();
         this.loadVideoFromURL();
-        this.initTerminologyDrawer();
+        this.initSubtitlePanel();
     }
 
     // 初始化Video.js播放器
@@ -105,11 +106,11 @@ class VideoPlayer {
         playerContainer.style.display = 'flex';
     }
 
-    // 初始化术语库抽屉
-    initTerminologyDrawer() {
+    // 初始化字幕面板
+    initSubtitlePanel() {
         const toggleBtn = document.getElementById('toggle-drawer-btn');
-        const drawer = document.getElementById('terminology-drawer');
-        const searchInput = document.getElementById('term-search');
+        const drawer = document.getElementById('subtitle-drawer');
+        const subtitleInput = document.getElementById('subtitle-file');
         
         if (toggleBtn && drawer) {
             toggleBtn.addEventListener('click', () => {
@@ -119,95 +120,227 @@ class VideoPlayer {
             });
         }
         
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                this.filterTerminology(e.target.value);
+        // 处理字幕文件上传
+        if (subtitleInput) {
+            subtitleInput.addEventListener('change', (e) => {
+                this.handleSubtitleFile(e.target.files[0]);
             });
         }
         
-        // 加载术语库数据
-        this.loadTerminology();
+        // 监听视频时间更新
+        this.initSubtitleSync();
     }
 
-    // 加载术语库
-    async loadTerminology() {
-        try {
-            // 这里可以从API加载术语库数据
-            // 暂时使用模拟数据
-            this.terminology = [
-                {
-                    chinese: 'HTML',
-                    english: 'HyperText Markup Language',
-                    definition: '超文本标记语言，用于创建网页的标准标记语言'
-                },
-                {
-                    chinese: 'CSS',
-                    english: 'Cascading Style Sheets',
-                    definition: '层叠样式表，用于描述HTML文档的样式和布局'
-                },
-                {
-                    chinese: 'JavaScript',
-                    english: 'JavaScript',
-                    definition: '一种高级的、解释型的编程语言，主要用于网页开发'
-                }
-            ];
+    // 处理字幕文件
+    handleSubtitleFile(file) {
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
             
-            this.renderTerminology();
-        } catch (error) {
-            console.error('加载术语库失败:', error);
-        }
+            if (file.name.endsWith('.srt')) {
+                this.parseSrtContent(content);
+                // 转换为 VTT 并添加到视频
+                const vttContent = this.convertSrtToVtt(content);
+                const vttBlob = new Blob([vttContent], { type: 'text/vtt' });
+                const vttUrl = URL.createObjectURL(vttBlob);
+                this.addSubtitleTrack(vttUrl);
+            } else if (file.name.endsWith('.vtt')) {
+                this.parseVttContent(content);
+                const vttUrl = URL.createObjectURL(file);
+                this.addSubtitleTrack(vttUrl);
+            }
+        };
+        reader.readAsText(file);
     }
 
-    // 渲染术语库
-    renderTerminology(terms = this.terminology) {
-        const terminologyList = document.getElementById('terminology-list');
-        if (!terminologyList) return;
-        
-        if (terms.length === 0) {
-            terminologyList.innerHTML = '<div class="no-terms">没有找到相关术语</div>';
-            return;
-        }
-        
-        const termsHTML = terms.map(term => `
-            <div class="term-item">
-                <div class="term-chinese">${term.chinese}</div>
-                <div class="term-english">${term.english}</div>
-                <div class="term-definition">${term.definition}</div>
-            </div>
-        `).join('');
-        
-        terminologyList.innerHTML = termsHTML;
+    // 将时间字符串转换为秒数
+    timeToSeconds(timeString) {
+        const [time, milliseconds] = timeString.replace(',', '.').split('.');
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return hours * 3600 + minutes * 60 + seconds + Number(`0.${milliseconds}`);
     }
 
-    // 过滤术语库
-    filterTerminology(searchTerm) {
-        if (!searchTerm.trim()) {
-            this.renderTerminology();
-            return;
-        }
+    // 解析 SRT 内容
+    parseSrtContent(srtContent) {
+        this.subtitles = [];
+        const blocks = srtContent.trim().split(/\n\s*\n/);
         
-        const filteredTerms = this.terminology.filter(term => 
-            term.chinese.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            term.english.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            term.definition.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        blocks.forEach(block => {
+            const lines = block.trim().split('\n');
+            if (lines.length >= 3) {
+                const timeMatch = lines[1].match(/(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/);
+                if (timeMatch) {
+                    const startTime = this.timeToSeconds(timeMatch[1]);
+                    const endTime = this.timeToSeconds(timeMatch[2]);
+                    const text = lines.slice(2).join('\n');
+                    
+                    this.subtitles.push({
+                        startTime,
+                        endTime,
+                        text,
+                        timeString: timeMatch[1].replace(',', '.')
+                    });
+                }
+            }
+        });
+
+        this.updateSubtitlePanel();
+    }
+
+    // 解析 VTT 内容
+    parseVttContent(vttContent) {
+        this.subtitles = [];
+        const blocks = vttContent.trim().split(/\n\s*\n/).slice(1); // 跳过 WEBVTT 头
         
-        this.renderTerminology(filteredTerms);
+        blocks.forEach(block => {
+            const lines = block.trim().split('\n');
+            if (lines.length >= 2) {
+                const timeMatch = lines[0].match(/(\d{2}:\d{2}:\d{2}\.\d{3}) --> (\d{2}:\d{2}:\d{2}\.\d{3})/);
+                if (timeMatch) {
+                    const startTime = this.timeToSeconds(timeMatch[1]);
+                    const endTime = this.timeToSeconds(timeMatch[2]);
+                    const text = lines.slice(1).join('\n');
+                    
+                    this.subtitles.push({
+                        startTime,
+                        endTime,
+                        text,
+                        timeString: timeMatch[1]
+                    });
+                }
+            }
+        });
+
+        this.updateSubtitlePanel();
+    }
+
+    // 将 SRT 格式转换为 VTT 格式
+    convertSrtToVtt(srtContent) {
+        let vttContent = 'WEBVTT\n\n';
+        
+        vttContent += srtContent
+            .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2')
+            .replace(/^\d+\n/gm, '')
+            .replace(/\n\n+/g, '\n\n');
+
+        return vttContent;
     }
 
 
+
+    // 添加字幕轨道到视频
+    addSubtitleTrack(vttUrl) {
+        // 移除现有字幕轨道
+        const existingTracks = this.player.remoteTextTracks();
+        for (let i = existingTracks.length - 1; i >= 0; i--) {
+            this.player.removeRemoteTextTrack(existingTracks[i]);
+        }
+        
+        // 添加新字幕轨道
+        this.player.addRemoteTextTrack({
+            src: vttUrl,
+            kind: 'subtitles',
+            srclang: 'zh',
+            label: '中文',
+            default: true
+        }, false);
+    }
+
+    // 更新字幕面板
+    updateSubtitlePanel() {
+        const subtitleList = document.getElementById('subtitle-list');
+        if (!subtitleList) return;
+        
+        subtitleList.innerHTML = '';
+        
+        const scrollContainer = document.createElement('div');
+        scrollContainer.className = 'subtitle-scroll-container';
+        
+        this.subtitles.forEach((subtitle, index) => {
+            const subtitleElement = document.createElement('div');
+            subtitleElement.className = 'subtitle-item';
+            subtitleElement.dataset.index = index;
+            subtitleElement.innerHTML = `
+                <div class="time">${subtitle.timeString}</div>
+                <div class="text">${subtitle.text}</div>
+            `;
+            
+            // 点击字幕跳转到对应时间点
+            subtitleElement.addEventListener('click', () => {
+                this.player.currentTime(subtitle.startTime);
+            });
+            
+            scrollContainer.appendChild(subtitleElement);
+        });
+
+        subtitleList.appendChild(scrollContainer);
+    }
+
+    // 初始化字幕同步
+    initSubtitleSync() {
+        this.player.on('timeupdate', () => {
+            const currentTime = this.player.currentTime();
+            
+            // 查找当前时间对应的字幕
+            const newIndex = this.subtitles.findIndex(
+                subtitle => currentTime >= subtitle.startTime && currentTime <= subtitle.endTime
+            );
+            
+            // 如果找到新的字幕，更新高亮显示
+            if (newIndex !== this.currentSubtitleIndex) {
+                const subtitleItems = document.querySelectorAll('.subtitle-item');
+                
+                subtitleItems.forEach((item, index) => {
+                    item.classList.remove('active', 'passed', 'upcoming');
+                    
+                    if (index < newIndex) {
+                        item.classList.add('passed');
+                    } else if (index === newIndex) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.add('upcoming');
+                    }
+                });
+
+                // 如果找到当前字幕，滚动到对应位置
+                if (newIndex !== -1) {
+                    const activeElement = document.querySelector(`.subtitle-item[data-index="${newIndex}"]`);
+                    if (activeElement) {
+                        const container = document.querySelector('.subtitle-scroll-container');
+                        const subtitlePanel = document.querySelector('.subtitle-panel');
+                        if (container && subtitlePanel) {
+                            const containerHeight = subtitlePanel.offsetHeight - 56;
+                            const elementTop = activeElement.offsetTop;
+                            
+                            const scrollTop = Math.max(0, elementTop - (containerHeight / 2) + (activeElement.offsetHeight / 2));
+                            container.style.transform = `translateY(-${scrollTop}px)`;
+                        }
+                    }
+                }
+                
+                this.currentSubtitleIndex = newIndex;
+            }
+        });
+    }
 
     // 显示错误信息
     showError(message) {
-        const errorHTML = `
-            <div class="error-container">
-                <div class="error-icon">⚠️</div>
-                <div class="error-message">${message}</div>
-                <button onclick="window.location.href='/'" class="back-home-btn">返回首页</button>
-            </div>
+        const errorContainer = document.createElement('div');
+        errorContainer.className = 'error-container';
+        errorContainer.innerHTML = `
+            <div class="error-icon">⚠️</div>
+            <div class="error-message">${message}</div>
+            <button class="back-home-btn" onclick="window.location.href='index.html'">
+                <span class="material-icons">home</span>
+                返回首页
+            </button>
         `;
         
-        document.querySelector('.player-container').innerHTML = errorHTML;
+        const playerContainer = document.querySelector('.player-container');
+        playerContainer.innerHTML = '';
+        playerContainer.appendChild(errorContainer);
     }
 }
 
