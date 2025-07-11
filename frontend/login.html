@@ -31,24 +31,24 @@
         </div>
         
         <!-- 登录表单容器 -->
-        <div class="login-container magic-container">
+        <form class="login-container magic-container" id="login-form">
             <h2 class="login-title">Login</h2>
             
             <div class="input-group">
                 <div class="input-icon">
                     <img src="images/mail.svg" alt="Email" width="60" height="60">
                 </div>
-                <input type="text" class="magic-input" placeholder="Account">
+                <input type="text" class="magic-input" placeholder="Account" id="username" name="username" required>
             </div>
             
             <div class="input-group">
                 <div class="input-icon">
                     <img src="images/key.svg" alt="Password" width="60" height="60">
                 </div>
-                <input type="password" class="magic-input" placeholder="Password">
+                <input type="password" class="magic-input" placeholder="Password" id="password" name="password" required>
             </div>
             
-            <button class="login-button">
+            <button type="submit" class="login-button">
                 <svg class="login-button-bg" width="472" height="114" viewBox="0 0 472 114" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <ellipse cx="54.275" cy="57" rx="54.275" ry="57" fill="#8C65E7"/>
                     <ellipse cx="417.725" cy="57" rx="54.275" ry="57" fill="#8C65E7"/>
@@ -58,7 +58,8 @@
             </button>
             
             <p class="signup-text">Don't have an account? <a href="signup.html">Sign up</a>.</p>
-        </div>
+            <p class="home-link"><a href="../index.html">返回首页</a></p>
+        </form>
         
         <!-- Sorcerer装饰 -->
         <div class="sorcerer-container">
@@ -66,6 +67,8 @@
         </div>
     </div>
 
+    <!-- 引入认证脚本 -->
+    <script src="js/auth.js"></script>
     <script>
         // 添加表单验证
         const inputs = document.querySelectorAll('.magic-input');
@@ -81,9 +84,41 @@
             });
         });
 
-        // 添加按钮点击效果
-        document.querySelector('.login-button').addEventListener('click', function() {
-            alert('登录功能即将开放！');
+        // 登录表单提交处理
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showMessage('请填写所有字段', 'error');
+                return;
+            }
+            
+            // 显示加载状态
+            const submitBtn = document.querySelector('.login-button');
+            const originalText = submitBtn.querySelector('.login-button-text').textContent;
+            submitBtn.querySelector('.login-button-text').textContent = '登录中...';
+            submitBtn.disabled = true;
+            
+            try {
+                const result = await login(username, password);
+                
+                if (result.success) {
+                    showMessage('登录成功！正在跳转...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('登录失败，请稍后重试', 'error');
+            } finally {
+                submitBtn.querySelector('.login-button-text').textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>

@@ -135,7 +135,7 @@ function logout() {
 
 // 重定向到登录页面
 function redirectToLogin() {
-    window.location.href = '/src/pages/login.html';
+    window.location.href = '/fido/login.html';
 }
 
 // 检查页面访问权限
@@ -154,11 +154,50 @@ function checkPageAccess(requiredRole = null) {
     return true;
 }
 
+// 显示消息函数
+function showMessage(message, type = 'error') {
+    // 创建消息元素
+    let messageDiv = document.getElementById('message');
+    if (!messageDiv) {
+        messageDiv = document.createElement('div');
+        messageDiv.id = 'message';
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        document.body.appendChild(messageDiv);
+    }
+    
+    messageDiv.textContent = message;
+    messageDiv.style.display = 'block';
+    
+    if (type === 'success') {
+        messageDiv.style.backgroundColor = '#4CAF50';
+        messageDiv.style.color = 'white';
+    } else {
+        messageDiv.style.backgroundColor = '#f44336';
+        messageDiv.style.color = 'white';
+    }
+    
+    // 3秒后自动隐藏
+    setTimeout(() => {
+        messageDiv.style.display = 'none';
+    }, 3000);
+}
+
 // 页面加载时检查认证状态
 document.addEventListener('DOMContentLoaded', function() {
     // 如果在登录或注册页面，且用户已登录，则重定向到首页
     const currentPath = window.location.pathname;
-    if ((currentPath.includes('login.html') || currentPath.includes('register.html')) && isLoggedIn()) {
+    if ((currentPath.includes('login.html') || currentPath.includes('signup.html')) && isLoggedIn()) {
         window.location.href = '/index.html';
     }
 });

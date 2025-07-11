@@ -27,31 +27,31 @@
         </div>
         
         <!-- 注册表单容器 -->
-        <div class="signup-container magic-container">
+        <form class="signup-container magic-container" id="signup-form">
             <h2 class="signup-title">Sign Up</h2>
             
             <div class="input-group">
                 <div class="input-icon">
                     <img src="images/mail.svg" alt="Email" width="58" height="57">
                 </div>
-                <input type="text" class="magic-input" placeholder="Account">
+                <input type="text" class="magic-input" placeholder="Account" id="username" name="username" required minlength="3" maxlength="20">
             </div>
             
             <div class="input-group">
                 <div class="input-icon">
                     <img src="images/key.svg" alt="Password" width="58" height="57">
                 </div>
-                <input type="password" class="magic-input" placeholder="Password">
+                <input type="password" class="magic-input" placeholder="Password" id="password" name="password" required minlength="6">
             </div>
             
             <div class="input-group">
                 <div class="input-icon">
                     <img src="images/key.svg" alt="Password" width="58" height="57">
                 </div>
-                <input type="password" class="magic-input" placeholder="Confirm Password">
+                <input type="password" class="magic-input" placeholder="Confirm Password" id="confirm-password" name="confirm-password" required>
             </div>
             
-            <button class="signup-button">
+            <button type="submit" class="signup-button">
                 <svg class="signup-button-bg" width="580" height="130" viewBox="0 0 580 130" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <ellipse cx="65" cy="65" rx="65" ry="65" fill="#8C65E7"/>
                     <ellipse cx="515" cy="65" rx="65" ry="65" fill="#8C65E7"/>
@@ -61,7 +61,8 @@
             </button>
             
             <p class="login-text">Already have an account? <a href="login.html">Log in</a>.</p>
-        </div>
+            <p class="home-link"><a href="../index.html">返回首页</a></p>
+        </form>
         
         <!-- Wizard装饰 -->
         <div class="wizard-container">
@@ -69,6 +70,8 @@
         </div>
     </div>
 
+    <!-- 引入认证脚本 -->
+    <script src="js/auth.js"></script>
     <script>
         // 添加表单验证
         const inputs = document.querySelectorAll('.magic-input');
@@ -84,9 +87,58 @@
             });
         });
 
-        // 添加按钮点击效果
-        document.querySelector('.signup-button').addEventListener('click', function() {
-            alert('注册功能即将开放！');
+        // 注册表单提交处理
+        document.getElementById('signup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            // 验证输入
+            if (!username || !password || !confirmPassword) {
+                showMessage('请填写所有字段', 'error');
+                return;
+            }
+            
+            if (username.length < 3 || username.length > 20) {
+                showMessage('用户名长度必须为3-20个字符', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('密码至少需要6个字符', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('两次输入的密码不一致', 'error');
+                return;
+            }
+            
+            // 显示加载状态
+            const submitBtn = document.querySelector('.signup-button');
+            const originalText = submitBtn.querySelector('.signup-button-text').textContent;
+            submitBtn.querySelector('.signup-button-text').textContent = '注册中...';
+            submitBtn.disabled = true;
+            
+            try {
+                const result = await register(username, password);
+                
+                if (result.success) {
+                    showMessage('注册成功！正在跳转...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('注册失败，请稍后重试', 'error');
+            } finally {
+                submitBtn.querySelector('.signup-button-text').textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>
