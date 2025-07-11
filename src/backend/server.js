@@ -20,9 +20,26 @@ app.use('/api/auth', authRoutes);
 app.use('/api/video', videoRoutes);
 app.use('/api/admin', adminRoutes);
 
-// 静态文件服务
+// 静态文件服务 - 主页
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// 页面路由支持
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/pages/login.html'));
+});
+
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/pages/signup.html'));
+});
+
+app.get('/intro', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/pages/intro.html'));
+});
+
+app.get('/player', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/pages/player.html'));
 });
 
 // 404处理

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>七天速成前端魔法师 - 登录</title>
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <body class="magic-bg">
     <div class="login-page">
@@ -36,14 +36,14 @@
             
             <div class="input-group">
                 <div class="input-icon">
-                    <img src="images/mail.svg" alt="Email" width="60" height="60">
+                    <img src="../assets/images/mail.svg" alt="Email" width="60" height="60">
                 </div>
                 <input type="text" class="magic-input" placeholder="Account" id="username" name="username" required>
             </div>
             
             <div class="input-group">
                 <div class="input-icon">
-                    <img src="images/key.svg" alt="Password" width="60" height="60">
+                    <img src="../assets/images/key.svg" alt="Password" width="60" height="60">
                 </div>
                 <input type="password" class="magic-input" placeholder="Password" id="password" name="password" required>
             </div>
@@ -63,12 +63,11 @@
         
         <!-- Sorcerer装饰 -->
         <div class="sorcerer-container">
-            <img src="images/sorcerer.svg" alt="Sorcerer" class="sorcerer-image">
+            <img src="../assets/images/sorcerer.svg" alt="Sorcerer" class="sorcerer-image">
         </div>
-    </div>
-
-    <!-- 引入认证脚本 -->
-    <script src="js/auth.js"></script>
+        
+        <!-- 引入认证脚本 -->
+    <script src="../js/auth.js"></script>
     <script>
         // 添加表单验证
         const inputs = document.querySelectorAll('.magic-input');
