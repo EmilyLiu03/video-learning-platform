@@ -1,0 +1,344 @@
+/* Signup页面专用样式 */
+.signup-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 100px;
+}
+
+/* 标题容器 */
+.title-container {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.main-title {
+    font-family: 'Long Cang', 'Uncial Antiqua', cursive;
+    font-size: 100px;
+    background: radial-gradient(circle at left, #F87800, #FDE615);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    white-space: nowrap;
+    text-align: center;
+    font-weight: 400;
+}
+
+/* 星星装饰 */
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.star {
+    position: absolute;
+    opacity: 0.8;
+}
+
+.star-1 {
+    width: 57px;
+    height: 86px;
+    top: 10%;
+    right: 25%;
+    background: url('../images/signup/star-1.svg') center/contain no-repeat;
+}
+
+.star-2 {
+    width: 30px;
+    height: 45px;
+    top: 15%;
+    right: 15%;
+    background: url('../images/signup/star-2.svg') center/contain no-repeat;
+}
+
+.star-3 {
+    width: 40px;
+    height: 60px;
+    top: 8%;
+    right: 5%;
+    background: url('../images/signup/star-3.svg') center/contain no-repeat;
+}
+
+.star-4 {
+    width: 99px;
+    height: 148px;
+    top: 8%;
+    right: 2%;
+    background: url('../images/signup/star-4.svg') center/contain no-repeat;
+}
+
+.star-5 {
+    width: 68px;
+    height: 103px;
+    top: 13%;
+    left: 5%;
+    background: url('../images/signup/star-5.svg') center/contain no-repeat;
+}
+
+/* 新增闪动星星 */
+.star-6 {
+    width: 25px;
+    height: 38px;
+    top: 60%;
+    right: 30%;
+    background: url('../images/signup/star-2.svg') center/contain no-repeat;
+    animation: twinkle 2s infinite ease-in-out;
+}
+
+.star-7 {
+    width: 35px;
+    height: 52px;
+    top: 70%;
+    right: 10%;
+    background: url('../images/signup/star-3.svg') center/contain no-repeat;
+    animation: twinkle 2.5s infinite ease-in-out;
+    animation-delay: 0.5s;
+}
+
+.star-8 {
+    width: 28px;
+    height: 42px;
+    bottom: 20%;
+    left: 15%;
+    background: url('../images/signup/star-1.svg') center/contain no-repeat;
+    animation: twinkle 3s infinite ease-in-out;
+    animation-delay: 1s;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* 注册表单容器 */
+.signup-container {
+    width: 50%;
+    max-width: 650px;
+    position: relative;
+    z-index: 2;
+    margin-top: 140px;
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.signup-title {
+    font-size: 72px;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 25px;
+    letter-spacing: -3%;
+    font-weight: 300;
+    font-family: 'Noto Serif SC', 'Cinzel', serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.input-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.signup-button {
+    width: 580px;
+    height: 130px;
+    margin: 0 auto 30px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.signup-button-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.signup-button-text {
+    position: relative;
+    z-index: 1;
+    color: #FFFFFF;
+    font-size: 42px;
+    font-weight: 700;
+    font-family: 'Cinzel', serif;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.login-text {
+    font-size: 32px;
+    color: #FFFFFF;
+    text-align: center;
+    letter-spacing: -5%;
+}
+
+.login-text a {
+    color: #FFFFFF;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+    padding: 10px 20px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+.login-text a:hover {
+    color: #FDE615;
+    background: rgba(253, 230, 21, 0.1);
+}
+
+/* Wizard装饰 - 置底对齐 */
+.wizard-container {
+    position: fixed;
+    bottom: 0;
+    right: 5%;
+    width: 45%;
+    max-width: 600px;
+    height: auto;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.wizard-image {
+    width: 100%;
+    height: auto;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .wizard-container {
+        width: 30%;
+        right: 2%;
+    }
+    
+    .main-title {
+        font-size: 100px;
+    }
+    
+    .signup-container {
+        margin-right: 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .signup-page {
+        flex-direction: column;
+        padding: 20px;
+    }
+    
+    .signup-container {
+        max-width: 80%;
+        margin-right: 0;
+        margin-left: 0;
+        margin-bottom: 30px;
+    }
+    
+    .wizard-container {
+        position: relative;
+        width: 50%;
+        margin: 30px auto 0;
+        right: auto;
+        bottom: auto;
+    }
+    
+    .main-title {
+        font-size: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .signup-title {
+        font-size: 64px;
+    }
+    
+    .input-field {
+        height: 80px;
+        font-size: 32px;
+    }
+    
+    .signup-button {
+        width: 90%;
+        height: 90px;
+    }
+    
+    .signup-button-text {
+        font-size: 36px;
+    }
+    
+    .login-text {
+        font-size: 24px;
+    }
+    
+    .main-title {
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 576px) {
+    .signup-container {
+        padding: 20px;
+        border-radius: 40px;
+        border-width: 5px;
+    }
+    
+    .signup-title {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    
+    .input-field {
+        height: 70px;
+        font-size: 24px;
+        padding-left: 80px;
+    }
+    
+    .input-icon {
+        width: 40px;
+        height: 40px;
+        left: 15px;
+        top: 15px;
+    }
+    
+    .signup-button {
+        height: 70px;
+    }
+    
+    .signup-button-text {
+        font-size: 28px;
+    }
+    
+    .main-title {
+        font-size: 40px;
+    }
+} 

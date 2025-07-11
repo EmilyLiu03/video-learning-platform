@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程介绍 - 七天速成前端魔法师</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/intro.css">
+</head>
+<body class="magic-bg-dark">
+    <div class="container">
+        <!-- 魔法粒子 -->
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+
+        <!-- 返回按钮 -->
+        <a href="index.html" class="back-button">返回首页</a>
+
+        <!-- 侧边标题 -->
+        <div class="side-title">
+            课<br/>程<br/>介<br/>绍
+        </div>
+
+        <!-- 羊皮纸背景 -->
+        <div class="parchment-bg"></div>
+
+        <!-- 主要内容区域 -->
+        <div class="content-area">
+            <div class="scrollable-letter">
+                <div class="welcome-letter fade-in">
+                    <h1>🎩 来自魔法学院院长的一封欢迎信</h1>
+                    
+                    <p class="greeting">亲爱的学员：</p>
+                    
+                    <p>在你点开这个页面的那一刻，我们便已在魔法世界为你点亮了一盏学习的灯。欢迎你加入「七天速成前端魔法师」的奇妙旅程。在接下来的七天里，你将不再是一个代码新手，而是一位逐步掌握网页魔法、打造奇妙空间的数字炼金术士。</p>
+                    
+                    <p>我们的目标非常清晰——在七天内，让你拥有独立构建前端网页的能力，让你的作品在茫茫互联网中发光发亮，也让你的个人竞争力悄然升级。</p>
+                    
+                    <div class="course-overview">
+                        <h2>🪄 课程预言书一览：</h2>
+                        <div class="course-list">
+                            <div class="course-item">Day 1：学习咒语的基础——HTML、CSS、JavaScript 三大魔法体系初识</div>
+                            <div class="course-item">Day 2：掌控页面结构与变化——用 Flexbox 和 Grid 织出响应式魔法阵</div>
+                            <div class="course-item">Day 3：赋予页面生命——掌握 DOM 操控，让按钮与元素互动起来</div>
+                            <div class="course-item">Day 4：研习 Vue3 魔法卷轴——构建动态组件，了解响应式炼金术</div>
+                            <div class="course-item">Day 5：踏入 React 魔法塔——用 JSX 和 useState 驾驭组件之力</div>
+                            <div class="course-item">Day 6：解锁全栈密室——学习 Vite、Next.js、Nuxt.js 的跨界之术</div>
+                            <div class="course-item">Day 7：完成你的魔法试炼——整合项目，部署上线，准备迎战现实世界的技术试炼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="tips-section">
+                        <h2>📜 给未来魔法师的一点叮嘱：</h2>
+                        <p>请记住，魔法不是死记硬背的法术，而是理解与创造的力量。在这七天里，不必害怕出错，每一次 Debug 都是一种炼成。我们鼓励你勇敢探索，也欢迎你随时向主创团队发来猫头鹰邮件。</p>
+                        <p>愿你在代码与魔法交织的旅途中，找到属于自己的光芒。</p>
+                    </div>
+                    
+                    <div class="signature">
+                        ——魔法学院院长 敬上
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator-intro">📜 向下滚动阅读完整信件</div>
+        </div>
+
+        <!-- Owl装饰 -->
+        <div class="owl-decoration"></div>
+    </div>
+
+    <script>
+        // 添加页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            const contentArea = document.querySelector('.content-area');
+            const sideTitle = document.querySelector('.side-title');
+            
+            // 延迟显示侧边标题
+            setTimeout(() => {
+                sideTitle.style.animation = 'fadeIn 1s ease-in';
+            }, 500);
+            
+            // 添加打字机效果到标题
+            const title = document.querySelector('.welcome-letter h1');
+            const titleText = title.textContent;
+            title.textContent = '';
+            
+            let i = 0;
+            const typeWriter = () => {
+                if (i < titleText.length) {
+                    title.textContent += titleText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            };
+            
+            setTimeout(typeWriter, 1000);
+            
+            // 添加鼠标跟随效果
+            document.addEventListener('mousemove', function(e) {
+                const particles = document.querySelectorAll('.magic-particle');
+                particles.forEach((particle, index) => {
+                    const delay = index * 100;
+                    setTimeout(() => {
+                        const x = e.clientX + Math.random() * 100 - 50;
+                        const y = e.clientY + Math.random() * 100 - 50;
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                    }, delay);
+                });
+            });
+            
+            // 添加课程项目悬停效果
+            const courseItems = document.querySelectorAll('.course-item');
+            courseItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(10px)';
+                    this.style.color = '#F4ECC8';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0)';
+                    this.style.color = '#FFFFFF';
+                });
+            });
+
+            // 滚动提示控制
+            const scrollableLetter = document.querySelector('.scrollable-letter');
+            const scrollIndicatorIntro = document.querySelector('.scroll-indicator-intro');
+            
+            function checkScrollPosition() {
+                const isScrolledToBottom = scrollableLetter.scrollTop + scrollableLetter.clientHeight >= scrollableLetter.scrollHeight - 20;
+                if (isScrolledToBottom) {
+                    scrollIndicatorIntro.style.opacity = '0';
+                } else {
+                    scrollIndicatorIntro.style.opacity = '0.7';
+                }
+            }
+            
+            scrollableLetter.addEventListener('scroll', checkScrollPosition);
+            
+            // 初始检查
+            setTimeout(checkScrollPosition, 100);
+        });
+        
+        // 添加滚动视差效果
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const owlDecoration = document.querySelector('.owl-decoration');
+            const parchmentBg = document.querySelector('.parchment-bg');
+            
+            owlDecoration.style.transform = `translateY(${scrolled * 0.5}px)`;
+            parchmentBg.style.transform = `translateY(${scrolled * 0.2}px)`;
+        });
+    </script>
+</body>
+</html>

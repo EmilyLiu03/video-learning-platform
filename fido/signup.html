@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七天速成前端魔法师 - 注册</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/signup.css">
+</head>
+<body class="magic-bg">
+    <div class="signup-page">
+        <!-- 标题容器 -->
+        <div class="title-container">
+            <h1 class="main-title">七天速成前端魔法师</h1>
+        </div>
+        
+        <!-- 星星装饰 -->
+        <div class="stars">
+            <div class="star star-1 star-decoration"></div>
+            <div class="star star-2 star-decoration"></div>
+            <div class="star star-3 star-decoration"></div>
+            <div class="star star-4 star-decoration"></div>
+            <div class="star star-5 star-decoration"></div>
+            <div class="star star-6 star-decoration"></div>
+            <div class="star star-7 star-decoration"></div>
+            <div class="star star-8 star-decoration"></div>
+        </div>
+        
+        <!-- 注册表单容器 -->
+        <div class="signup-container magic-container">
+            <h2 class="signup-title">Sign Up</h2>
+            
+            <div class="input-group">
+                <div class="input-icon">
+                    <img src="images/mail.svg" alt="Email" width="58" height="57">
+                </div>
+                <input type="text" class="magic-input" placeholder="Account">
+            </div>
+            
+            <div class="input-group">
+                <div class="input-icon">
+                    <img src="images/key.svg" alt="Password" width="58" height="57">
+                </div>
+                <input type="password" class="magic-input" placeholder="Password">
+            </div>
+            
+            <div class="input-group">
+                <div class="input-icon">
+                    <img src="images/key.svg" alt="Password" width="58" height="57">
+                </div>
+                <input type="password" class="magic-input" placeholder="Confirm Password">
+            </div>
+            
+            <button class="signup-button">
+                <svg class="signup-button-bg" width="580" height="130" viewBox="0 0 580 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="65" cy="65" rx="65" ry="65" fill="#8C65E7"/>
+                    <ellipse cx="515" cy="65" rx="65" ry="65" fill="#8C65E7"/>
+                    <rect x="64" width="451" height="130" fill="#8C65E7"/>
+                </svg>
+                <span class="signup-button-text">Create Account</span>
+            </button>
+            
+            <p class="login-text">Already have an account? <a href="login.html">Log in</a>.</p>
+        </div>
+        
+        <!-- Wizard装饰 -->
+        <div class="wizard-container">
+            <img src="images/signup/wizard.svg" alt="Wizard" class="wizard-image">
+        </div>
+    </div>
+
+    <script>
+        // 添加表单验证
+        const inputs = document.querySelectorAll('.magic-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#FDE615';
+                this.style.boxShadow = '0 0 10px rgba(253, 230, 21, 0.3)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#000000';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // 添加按钮点击效果
+        document.querySelector('.signup-button').addEventListener('click', function() {
+            alert('注册功能即将开放！');
+        });
+    </script>
+</body>
+</html>
