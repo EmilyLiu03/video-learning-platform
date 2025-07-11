@@ -4,12 +4,18 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-// 腾讯云配置信息（请替换为您的真实配置）
+// 腾讯云配置信息（从环境变量读取）
 const tencentConfig = {
-    appId: "1329006807",
-    secretId: "AKIDVyFSSAmDWgkgTTTIwNbbOyFLGyTkofIh", 
-    secretKey: "FH5gKo5Z5gJl26zhDcrwoSt8D4kGZeWB"
+    appId: process.env.TENCENT_APP_ID,
+    secretId: process.env.TENCENT_SECRET_ID,
+    secretKey: process.env.TENCENT_SECRET_KEY
 };
+
+// 验证环境变量是否已设置
+if (!tencentConfig.appId || !tencentConfig.secretId || !tencentConfig.secretKey) {
+    console.error('错误：腾讯云配置环境变量未设置。请检查.env文件中的TENCENT_APP_ID、TENCENT_SECRET_ID和TENCENT_SECRET_KEY');
+    process.exit(1);
+}
 
 // 腾讯云签名生成类（基于官方Java代码转换）
 class TencentSignature {
