@@ -2,73 +2,199 @@
   "terms": [
     {
       "id": 1,
-      "chinese": "本地化",
-      "english": "Localization",
-      "chineseDefinition": "将产品（如软件、网站、游戏等）适应特定地区或语言环境的过程",
-      "englishDefinition": "The process of adapting a product (such as software, websites, games) to a specific region or language"
+      "chinese": "标签",
+      "english": "Tag",
+      "chineseDefinition": "HTML 中用于定义文档结构和内容的标记，例如 <div>、<p>、<a>。",
+      "englishDefinition": "A markup element in HTML used to define the structure and content of a document, such as <div>, <p>, and <a>."
     },
     {
       "id": 2,
-      "chinese": "国际化",
-      "english": "Internationalization",
-      "chineseDefinition": "设计和开发产品时考虑到多语言和多文化支持的过程",
-      "englishDefinition": "The process of designing and developing a product to support multiple languages and cultures"
+      "chinese": "语义化",
+      "english": "Semantic HTML",
+      "chineseDefinition": "使用具有语义的 HTML 标签，使网页结构更清晰，有利于 SEO 和可访问性。",
+      "englishDefinition": "The use of HTML tags that convey meaning about the content within them, making the structure clearer and more accessible."
     },
     {
       "id": 3,
-      "chinese": "翻译记忆库",
-      "english": "Translation Memory",
-      "chineseDefinition": "存储源文本及其对应译文的数据库，用于提高翻译效率和一致性",
-      "englishDefinition": "A database that stores source text and its corresponding translations to improve translation efficiency and consistency"
+      "chinese": "DOM",
+      "english": "DOM (Document Object Model)",
+      "chineseDefinition": "文档对象模型，是浏览器将 HTML 文档解析成的树状结构，可通过 JavaScript 操作。",
+      "englishDefinition": "The Document Object Model is a tree-like representation of a web page that allows JavaScript to interact with and manipulate content."
     },
     {
       "id": 4,
-      "chinese": "术语库",
-      "english": "Terminology Database",
-      "chineseDefinition": "包含特定领域专业术语及其定义和翻译的集合",
-      "englishDefinition": "A collection of specialized terms in a specific field along with their definitions and translations"
+      "chinese": "属性",
+      "english": "Attribute",
+      "chineseDefinition": "HTML 元素中的附加信息，如 href、src、alt 等。",
+      "englishDefinition": "Additional information about an HTML element, such as href, src, or alt."
     },
     {
       "id": 5,
-      "chinese": "字幕",
-      "english": "Subtitles",
-      "chineseDefinition": "显示在视频底部的文本，通常是对话或旁白的翻译",
-      "englishDefinition": "Text displayed at the bottom of a video, typically a translation of dialogue or narration"
+      "chinese": "盒模型",
+      "english": "Box Model",
+      "chineseDefinition": "描述 HTML 元素布局的模型，包括内容、内边距、边框和外边距。",
+      "englishDefinition": "A model describing the layout of HTML elements including content, padding, border, and margin."
     },
     {
       "id": 6,
-      "chinese": "配音",
-      "english": "Dubbing",
-      "chineseDefinition": "用目标语言的语音替换原始音频轨道的过程",
-      "englishDefinition": "The process of replacing the original audio track with voice in the target language"
+      "chinese": "选择器",
+      "english": "Selector",
+      "chineseDefinition": "CSS 中用于选择 HTML 元素并应用样式的语法。",
+      "englishDefinition": "A pattern in CSS used to select and style specific HTML elements."
     },
     {
       "id": 7,
-      "chinese": "文化适应",
-      "english": "Cultural Adaptation",
-      "chineseDefinition": "调整内容以适应目标文化的习惯、价值观和敏感性",
-      "englishDefinition": "Adjusting content to fit the customs, values, and sensitivities of the target culture"
+      "chinese": "继承",
+      "english": "Inheritance",
+      "chineseDefinition": "CSS 中某些样式会从父元素传递到子元素的特性。",
+      "englishDefinition": "The behavior in CSS where some style properties are passed from parent to child elements."
     },
     {
       "id": 8,
-      "chinese": "语言资产",
-      "english": "Linguistic Assets",
-      "chineseDefinition": "翻译过程中创建和使用的资源，如术语库、翻译记忆库等",
-      "englishDefinition": "Resources created and used during the translation process, such as terminology databases and translation memories"
+      "chinese": "变量",
+      "english": "Variable",
+      "chineseDefinition": "在 JavaScript 中用于存储数据的标识符，如 var、let、const 声明的名称。",
+      "englishDefinition": "An identifier used in JavaScript to store data, declared using var, let, or const."
     },
     {
       "id": 9,
-      "chinese": "计算机辅助翻译",
-      "english": "Computer-Assisted Translation (CAT)",
-      "chineseDefinition": "使用软件工具辅助人工翻译的过程",
-      "englishDefinition": "The process of using software tools to assist human translation"
+      "chinese": "函数",
+      "english": "Function",
+      "chineseDefinition": "封装可复用代码逻辑的结构，可通过调用执行。",
+      "englishDefinition": "A reusable block of code designed to perform a specific task when invoked."
     },
     {
       "id": 10,
-      "chinese": "机器翻译",
-      "english": "Machine Translation (MT)",
-      "chineseDefinition": "使用计算机算法自动将文本从一种语言翻译成另一种语言",
-      "englishDefinition": "The automatic translation of text from one language to another using computer algorithms"
+      "chinese": "数组",
+      "english": "Array",
+      "chineseDefinition": "一种用于存储多个值的有序集合，使用 [] 表示。",
+      "englishDefinition": "An ordered collection of items stored in a single variable using square brackets."
+    },
+    {
+      "id": 11,
+      "chinese": "对象",
+      "english": "Object",
+      "chineseDefinition": "用于存储键值对的数据结构，是 JavaScript 的核心组成。",
+      "englishDefinition": "A data structure in JavaScript used to store key-value pairs."
+    },
+    {
+      "id": 12,
+      "chinese": "条件语句",
+      "english": "Conditional Statement",
+      "chineseDefinition": "根据不同条件执行不同代码的结构，如 if、else。",
+      "englishDefinition": "Statements that perform different actions based on different conditions, like if or else."
+    },
+    {
+      "id": 13,
+      "chinese": "循环",
+      "english": "Loop",
+      "chineseDefinition": "用于重复执行一段代码的结构，如 for、while。",
+      "englishDefinition": "A control structure that repeats a block of code, such as for or while loops."
+    },
+    {
+      "id": 14,
+      "chinese": "事件监听器",
+      "english": "Event Listener",
+      "chineseDefinition": "用于监听并响应用户与网页交互的事件机制。",
+      "englishDefinition": "A method used to detect and respond to user interactions on a webpage."
+    },
+    {
+      "id": 15,
+      "chinese": "事件冒泡",
+      "english": "Event Bubbling",
+      "chineseDefinition": "事件从目标元素向其祖先元素依次传播的过程。",
+      "englishDefinition": "The process where an event propagates from the target element up through its ancestors."
+    },
+    {
+      "id": 16,
+      "chinese": "渲染引擎",
+      "english": "Rendering Engine",
+      "chineseDefinition": "浏览器中负责解析 HTML、CSS 并绘制网页内容的核心组件。",
+      "englishDefinition": "The browser component that parses HTML and CSS and displays content on the screen."
+    },
+    {
+      "id": 17,
+      "chinese": "回流",
+      "english": "Reflow",
+      "chineseDefinition": "当页面结构变化时重新计算布局的过程。",
+      "englishDefinition": "The process of recalculating layout when the structure of a page changes."
+    },
+    {
+      "id": 18,
+      "chinese": "重绘",
+      "english": "Repaint",
+      "chineseDefinition": "页面样式发生变化但不影响布局时，浏览器重新渲染元素。",
+      "englishDefinition": "When an element's appearance changes but not its layout, the browser repaints it."
+    },
+    {
+      "id": 19,
+      "chinese": "事件循环",
+      "english": "Event Loop",
+      "chineseDefinition": "JavaScript 的执行机制，用于异步任务调度。",
+      "englishDefinition": "The mechanism that handles asynchronous code in JavaScript."
+    },
+    {
+      "id": 20,
+      "chinese": "宏任务",
+      "english": "Macro Task",
+      "chineseDefinition": "如 setTimeout 属于宏任务，在事件循环中排队执行。",
+      "englishDefinition": "Tasks like setTimeout queued in the event loop."
+    },
+    {
+      "id": 21,
+      "chinese": "微任务",
+      "english": "Micro Task",
+      "chineseDefinition": "如 Promise 回调，优先级高于宏任务。",
+      "englishDefinition": "Tasks like Promise callbacks that run before macro tasks."
+    },
+    {
+      "id": 22,
+      "chinese": "模块化",
+      "english": "Modularization",
+      "chineseDefinition": "将程序划分为多个可复用模块的结构。",
+      "englishDefinition": "Dividing a program into reusable, independent modules."
+    },
+    {
+      "id": 23,
+      "chinese": "打包工具",
+      "english": "Bundler",
+      "chineseDefinition": "将模块打包成可在浏览器运行的文件的工具，如 Webpack。",
+      "englishDefinition": "Tools that bundle modules into browser-friendly files."
+    },
+    {
+      "id": 24,
+      "chinese": "Babel",
+      "english": "Babel",
+      "chineseDefinition": "一个 JavaScript 编译器，用于将 ES6+ 转译为兼容旧浏览器的版本。",
+      "englishDefinition": "A JavaScript compiler that transforms ES6+ code to older syntax."
+    },
+    {
+      "id": 25,
+      "chinese": "TypeScript",
+      "english": "TypeScript",
+      "chineseDefinition": "JavaScript 的超集，添加了类型系统和编译检查。",
+      "englishDefinition": "A superset of JavaScript that adds static typing."
+    },
+    {
+      "id": 26,
+      "chinese": "跨域",
+      "english": "Cross-Origin",
+      "chineseDefinition": "不同源之间资源访问的行为，需使用 CORS 等技术。",
+      "englishDefinition": "Resource access across different origins, handled with CORS."
+    },
+    {
+      "id": 27,
+      "chinese": "同源策略",
+      "english": "Same-Origin Policy",
+      "chineseDefinition": "浏览器的安全机制，限制不同源间的交互。",
+      "englishDefinition": "A security mechanism that restricts interaction between different origins."
+    },
+    {
+      "id": 28,
+      "chinese": "缓存机制",
+      "english": "Caching Mechanism",
+      "chineseDefinition": "用于提升页面性能，通过重复利用已加载资源。",
+      "englishDefinition": "Improves performance by reusing previously fetched resources."
     }
   ]
 }

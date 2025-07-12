@@ -12,14 +12,27 @@ class VideoUploader {
     // 绑定事件
     bindEvents() {
         const fileInput = document.getElementById('video-file-input');
+        const coverInput = document.getElementById('cover-file-input');
         const titleInput = document.getElementById('video-title-input');
         const uploadBtn = document.getElementById('upload-btn');
         const cancelBtn = document.getElementById('cancel-btn');
         const fileDisplay = document.getElementById('file-input-display');
+        const coverDisplay = document.getElementById('cover-input-display');
+        const removeCoverBtn = document.getElementById('remove-cover-btn');
         
         // 文件选择事件
         fileInput.addEventListener('change', (e) => {
             this.handleFileSelect(e);
+        });
+        
+        // 封面选择事件
+        coverInput.addEventListener('change', (e) => {
+            this.handleCoverSelect(e);
+        });
+        
+        // 移除封面事件
+        removeCoverBtn.addEventListener('click', () => {
+            this.removeCover();
         });
         
         // 拖拽事件
@@ -40,6 +53,27 @@ class VideoUploader {
             if (files.length > 0) {
                 fileInput.files = files;
                 this.handleFileSelect({ target: { files } });
+            }
+        });
+        
+        // 封面拖拽事件
+        coverDisplay.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            coverDisplay.style.borderColor = 'rgba(253, 230, 21, 0.8)';
+        });
+        
+        coverDisplay.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            coverDisplay.style.borderColor = 'rgba(253, 230, 21, 0.4)';
+        });
+        
+        coverDisplay.addEventListener('drop', (e) => {
+            e.preventDefault();
+            coverDisplay.style.borderColor = 'rgba(253, 230, 21, 0.4)';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                coverInput.files = files;
+                this.handleCoverSelect({ target: { files } });
             }
         });
         
@@ -91,6 +125,68 @@ class VideoUploader {
         this.validateForm();
     }
 
+    // 处理封面选择
+    handleCoverSelect(e) {
+        const file = e.target.files[0];
+        const coverDisplay = document.getElementById('cover-input-display');
+        const coverText = coverDisplay.querySelector('.file-text');
+        const coverPreview = document.getElementById('cover-preview');
+        const coverPreviewImg = document.getElementById('cover-preview-img');
+        
+        if (file) {
+            // 检查文件类型
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                this.showError('请选择JPG、PNG或WEBP格式的图片文件');
+                return;
+            }
+            
+            // 检查文件大小 (5MB)
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                this.showError('封面图片大小不能超过5MB');
+                return;
+            }
+            
+            // 显示预览
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                coverPreviewImg.src = e.target.result;
+                coverPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+            
+            coverText.textContent = `已选择封面: ${file.name} (${this.formatFileSize(file.size)})`;
+            coverDisplay.classList.add('has-file');
+            this.hideError();
+        } else {
+            this.removeCover();
+        }
+    }
+
+    // 移除封面
+    removeCover() {
+        const coverInput = document.getElementById('cover-file-input');
+        const coverDisplay = document.getElementById('cover-input-display');
+        const coverText = coverDisplay.querySelector('.file-text');
+        const coverPreview = document.getElementById('cover-preview');
+        
+        coverInput.value = '';
+        coverText.textContent = '点击选择封面图片（JPG、PNG、WEBP格式）';
+        coverDisplay.classList.remove('has-file');
+        coverPreview.style.display = 'none';
+    }
+
+    // 将图片转换为Base64
+    async convertImageToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     // 格式化文件大小
     formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -129,14 +225,29 @@ class VideoUploader {
         const progressFill = document.getElementById('progress-fill');
         const progressText = document.getElementById('progress-text');
         const fileInput = document.getElementById('video-file-input');
+        const coverInput = document.getElementById('cover-file-input');
         const titleInput = document.getElementById('video-title-input');
         const descInput = document.getElementById('video-description-input');
         const uploadForm = document.getElementById('upload-form');
         const successMessage = document.getElementById('success-message');
         
         const file = fileInput.files[0];
+        const coverFile = coverInput.files[0];
         const title = titleInput.value.trim();
         const description = descInput.value.trim();
+        
+        // 处理封面
+        let coverUrl = '';
+        if (coverFile) {
+            try {
+                coverUrl = await this.convertImageToBase64(coverFile);
+                console.log('封面已转换为Base64');
+            } catch (error) {
+                console.error('封面处理失败:', error);
+                this.showError('封面处理失败，请重新选择');
+                return;
+            }
+        }
         
         // 检查腾讯云SDK是否加载
         if (typeof TcVod === 'undefined') {
@@ -235,7 +346,8 @@ class VideoUploader {
                     title,
                     description,
                     fileId,
-                    videoUrl
+                    videoUrl,
+                    coverUrl
                 })
             });
             

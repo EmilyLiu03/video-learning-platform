@@ -13,8 +13,7 @@ const tencentConfig = {
 
 // 验证环境变量是否已设置
 if (!tencentConfig.appId || !tencentConfig.secretId || !tencentConfig.secretKey) {
-    console.error('错误：腾讯云配置环境变量未设置。请检查.env文件中的TENCENT_APP_ID、TENCENT_SECRET_ID和TENCENT_SECRET_KEY');
-    process.exit(1);
+    console.warn('警告：腾讯云配置环境变量未设置。视频上传功能将不可用。请检查.env文件中的TENCENT_APP_ID、TENCENT_SECRET_ID和TENCENT_SECRET_KEY');
 }
 
 // 腾讯云签名生成类（基于官方Java代码转换）
@@ -113,6 +112,14 @@ router.post('/upload-signature', (req, res) => {
     try {
         console.log('收到上传签名请求');
         
+        // 检查腾讯云配置是否可用
+        if (!tencentConfig.appId || !tencentConfig.secretId || !tencentConfig.secretKey) {
+            return res.json({
+                success: false,
+                error: '腾讯云配置未设置，视频上传功能不可用'
+            });
+        }
+        
         // 创建签名生成器
         const signature = new TencentSignature(
             tencentConfig.secretId,
@@ -142,9 +149,9 @@ router.post('/upload-signature', (req, res) => {
 // 保存用户上传的视频信息
 router.post('/save-video', (req, res) => {
     try {
-        const { userId, title, description, fileId, videoUrl } = req.body;
+        const { userId, title, description, fileId, videoUrl, coverUrl } = req.body;
         
-        console.log('保存视频信息请求:', { userId, title, description, fileId, videoUrl });
+        console.log('保存视频信息请求:', { userId, title, description, fileId, videoUrl, coverUrl });
         
         if (!userId || !title || !fileId || !videoUrl) {
             return res.json({
@@ -161,7 +168,9 @@ router.post('/save-video', (req, res) => {
             description: description || '',
             fileId,
             videoUrl,
+            coverUrl: coverUrl || '', // 添加封面URL支持
             uploadDate: new Date().toISOString(),
+            uploadTime: new Date().toISOString(), // 兼容前端的uploadTime字段
             source: 'tencent_vod' // 标记为腾讯云VOD上传
         };
         
