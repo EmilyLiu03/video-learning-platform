@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心 - 七天速成前端魔法师</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <button class="avatar-button" onclick="alert('您已在用户中心！')"></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 主标题 -->
+        <div class="page-title">
+            <h1 class="title-main">学籍信息</h1>
+        </div>
+
+        <!-- 用户信息卡片 -->
+        <div class="user-info-card">
+            <div class="user-avatar">
+                <img src="../assets/images/user-avatar.png" alt="用户头像" class="avatar-image">
+            </div>
+            <div class="user-name">用户名</div>
+        </div>
+
+        <!-- 功能按钮区域 -->
+        <div class="dashboard-buttons">
+            <div class="dashboard-button" onclick="showProgress()">
+                <span class="button-text">查看学习进度</span>
+            </div>
+            
+            <div class="dashboard-button" onclick="showVideos()">
+                <span class="button-text">查看上传视频</span>
+            </div>
+            
+            <div class="dashboard-button" onclick="changePassword()">
+                <span class="button-text">修改账户密码</span>
+            </div>
+            
+            <div class="dashboard-button logout-button" onclick="logout()">
+                <span class="button-text">退出账号</span>
+            </div>
+        </div>
+
+        <!-- 装饰星星 -->
+        <div class="star star-1 star-decoration"></div>
+        <div class="star star-2 star-decoration"></div>
+        <div class="star star-3 star-decoration"></div>
+        <div class="star star-4 star-decoration"></div>
+        <div class="star star-5 star-decoration"></div>
+    </div>
+
+    <script>
+        // 查看学习进度
+        function showProgress() {
+            alert('学习进度功能即将开放！\n\n当前进度：\n• Day 1: 已完成\n• Day 2: 进行中\n• Day 3-7: 未开始');
+        }
+
+        // 查看上传视频
+        function showVideos() {
+            window.location.href = 'videos.html';
+        }
+
+        // 修改账户密码
+        function changePassword() {
+            const newPassword = prompt('请输入新密码：');
+            if (newPassword) {
+                alert('密码修改成功！请重新登录。');
+            }
+        }
+
+        // 退出账号
+        function logout() {
+            if (confirm('确定要退出账号吗？')) {
+                alert('已退出账号，即将返回首页。');
+                window.location.href = '../index.html';
+            }
+        }
+
+        // 添加星星闪烁动画
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.style.animationDelay = `${index * 0.5}s`;
+        });
+
+        // 添加按钮悬停效果
+        const buttons = document.querySelectorAll('.dashboard-button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 25px rgba(226, 209, 240, 0.4)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+            });
+        });
+    </script>
+</body>
+</html>

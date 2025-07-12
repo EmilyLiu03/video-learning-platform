@@ -33,13 +33,30 @@
 npm install
 ```
 
-3. 启动服务器
+3. 配置环境变量
+
+复制 `.env.example` 文件为 `.env` 并填入您的配置信息：
+
+```bash
+cp .env.example .env
+```
+
+编辑 `.env` 文件，填入您的腾讯云VOD配置：
+
+```
+TENCENT_APP_ID=your_app_id_here
+TENCENT_SECRET_ID=your_secret_id_here
+TENCENT_SECRET_KEY=your_secret_key_here
+PORT=3000
+```
+
+4. 启动服务器
 
 ```bash
 npm start
 ```
 
-4. 访问应用
+5. 访问应用
 
 打开浏览器，访问 http://localhost:3000
 
@@ -84,5 +101,7 @@ npm start
 ## 注意事项
 
 - 本项目为演示项目，使用JSON文件存储数据，生产环境建议使用数据库
-- 视频上传功能需要配置腾讯云VOD服务，当前使用模拟数据
+- 视频上传功能需要配置腾讯云VOD服务的真实密钥信息
 - 默认管理员密码为"password"，实际使用时请修改为更安全的密码
+- **重要**：`.env` 文件包含敏感信息，已在 `.gitignore` 中忽略，请勿将其提交到版本控制系统
+- 团队协作时，请通过安全渠道分享环境变量配置，不要在代码中硬编码敏感信息

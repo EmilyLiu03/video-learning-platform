@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七天速成前端魔法师</title>
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body class="magic-bg">
+            <!-- 悬浮导航栏 -->
+        <nav class="nav-bar">
+            <div class="nav-content">
+                <div class="nav-left">
+                    <div class="nav-wizard"></div>
+                    <span class="nav-title">七天速成前端魔法师</span>
+                </div>
+                <div class="nav-right">
+                    <a href="pages/intro.html" class="nav-link">课程介绍</a>
+                    <a href="pages/login.html" class="nav-link auth-link">登录</a>
+                    <a href="pages/signup.html" class="nav-link auth-link signup-btn">注册</a>
+                    <a href="pages/dashboard.html" class="avatar-button" title="用户中心"></a>
+                </div>
+            </div>
+        </nav>
+
+    <div class="container">
+        
+        <!-- 主标题 -->
+        <div class="main-title">
+            <h1 class="title-main">七天速成前端魔法师</h1>
+            <p class="title-sub">BECOME A FRONTEND WIZARD IN 7 DAYS</p>
+        </div>
+
+        <!-- 开始学习按钮 -->
+        <div class="start-button">
+            <button class="magic-button">立即开始学习</button>
+        </div>
+
+        <!-- 课程内容区域 -->
+        <div class="content-area">
+            <!-- Sorcerer装饰 -->
+            <div class="sorcerer-decoration"></div>
+            
+            <div class="scrollable-content">
+                <h2 class="content-title">🌿主要内容</h2>
+                <div class="course-grid">
+                    <div class="course-item">Day 1 网页构成基础</div>
+                    <div class="course-item">Day 2 页面布局与响应式设计</div>
+                    <div class="course-item">Day 3 JavaScript DOM 操作</div>
+                    <div class="course-item">Day 4 Vue3 核心概念</div>
+                    <div class="course-item">Day 5 React核心能力</div>
+                    <div class="course-item">Day 6 工程化与全栈思维</div>
+                    <div class="course-item">Day 7 项目整合与面试准备</div>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator">▼ 滚动查看更多内容</div>
+        </div>
+
+        <!-- 装饰星星 -->
+        <div class="star star-1 star-decoration"></div>
+        <div class="star star-2 star-decoration"></div>
+        <div class="star star-3 star-decoration"></div>
+        <div class="star star-4 star-decoration"></div>
+        <div class="star star-5 star-decoration"></div>
+    </div>
+
+    <script>
+        // 添加按钮点击效果
+        document.querySelector('.magic-button').addEventListener('click', function() {
+            alert('开始你的前端魔法师之旅！');
+        });
+
+        // 添加星星闪烁动画
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.style.animationDelay = `${index * 0.5}s`;
+        });
+
+        // 添加课程项目悬停效果
+        const courseItems = document.querySelectorAll('.course-item');
+        courseItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.textShadow = '0 0 10px rgba(244, 236, 200, 0.5)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.textShadow = '';
+            });
+        });
+
+        // 滚动提示控制
+        const scrollableContent = document.querySelector('.scrollable-content');
+        const scrollIndicator = document.querySelector('.scroll-indicator');
+        
+        function checkScrollPosition() {
+            const isScrolledToBottom = scrollableContent.scrollTop + scrollableContent.clientHeight >= scrollableContent.scrollHeight - 10;
+            if (isScrolledToBottom) {
+                scrollIndicator.style.opacity = '0';
+            } else {
+                scrollIndicator.style.opacity = '0.8';
+            }
+        }
+        
+        scrollableContent.addEventListener('scroll', checkScrollPosition);
+        
+        // 初始检查
+        setTimeout(checkScrollPosition, 100);
+    </script>
+</body>
+</html>

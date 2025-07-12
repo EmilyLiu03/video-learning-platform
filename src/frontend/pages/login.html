@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七天速成前端魔法师 - 登录</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
+</head>
+<body class="magic-bg">
+    <div class="login-page">
+        <!-- 标题容器 -->
+        <div class="title-container">
+            <h1 class="main-title">七天速成前端魔法师</h1>
+        </div>
+        
+        <!-- 星星装饰 -->
+        <div class="stars">
+            <div class="star star-1 star-decoration"></div>
+            <div class="star star-2 star-decoration"></div>
+            <div class="star star-3 star-decoration"></div>
+            <div class="star star-4 star-decoration"></div>
+            <div class="star star-5 star-decoration"></div>
+            <div class="star star-6 star-decoration"></div>
+            <div class="star star-7 star-decoration"></div>
+            <div class="star star-8 star-decoration"></div>
+            <div class="star star-9 star-decoration"></div>
+            <div class="star star-10 star-decoration"></div>
+            <div class="star star-11 star-decoration"></div>
+            <div class="star star-12 star-decoration"></div>
+        </div>
+        
+        <!-- 登录表单容器 -->
+        <form class="login-container magic-container" id="login-form">
+            <h2 class="login-title">Login</h2>
+            
+            <div class="input-group">
+                <div class="input-icon">
+                    <img src="../assets/images/mail.svg" alt="Email" width="60" height="60">
+                </div>
+                <input type="text" class="magic-input" placeholder="Account" id="username" name="username" required>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-icon">
+                    <img src="../assets/images/key.svg" alt="Password" width="60" height="60">
+                </div>
+                <input type="password" class="magic-input" placeholder="Password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-button">
+                <svg class="login-button-bg" width="472" height="114" viewBox="0 0 472 114" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="54.275" cy="57" rx="54.275" ry="57" fill="#8C65E7"/>
+                    <ellipse cx="417.725" cy="57" rx="54.275" ry="57" fill="#8C65E7"/>
+                    <rect x="53.87" width="363.45" height="114" fill="#8C65E7"/>
+                </svg>
+                <span class="login-button-text">Log in</span>
+            </button>
+            
+            <p class="signup-text">Don't have an account? <a href="signup.html">Sign up</a>.</p>
+            <p class="home-link"><a href="../index.html">返回首页</a></p>
+        </form>
+        
+        <!-- Sorcerer装饰 -->
+        <div class="sorcerer-container">
+            <img src="../assets/images/sorcerer.svg" alt="Sorcerer" class="sorcerer-image">
+        </div>
+        
+        <!-- 引入认证脚本 -->
+    <script src="../js/auth.js"></script>
+    <script>
+        // 添加表单验证
+        const inputs = document.querySelectorAll('.magic-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.style.borderColor = '#FDE615';
+                this.style.boxShadow = '0 0 10px rgba(253, 230, 21, 0.3)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.style.borderColor = '#000000';
+                this.style.boxShadow = 'none';
+            });
+        });
+
+        // 登录表单提交处理
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showMessage('请填写所有字段', 'error');
+                return;
+            }
+            
+            // 显示加载状态
+            const submitBtn = document.querySelector('.login-button');
+            const originalText = submitBtn.querySelector('.login-button-text').textContent;
+            submitBtn.querySelector('.login-button-text').textContent = '登录中...';
+            submitBtn.disabled = true;
+            
+            try {
+                const result = await login(username, password);
+                
+                if (result.success) {
+                    showMessage('登录成功！正在跳转...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1000);
+                } else {
+                    showMessage(result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('登录失败，请稍后重试', 'error');
+            } finally {
+                submitBtn.querySelector('.login-button-text').textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

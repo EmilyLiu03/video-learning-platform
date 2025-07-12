@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的视频 - 七天速成前端魔法师</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/videos.css">
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="dashboard.html" class="nav-link">用户中心</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <button class="avatar-button" onclick="window.location.href='dashboard.html'"></button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <h1 class="page-title">我的视频</h1>
+            <p class="page-subtitle">探索本地化学习的魔法世界</p>
+        </div>
+
+        <!-- 用户信息显示 -->
+        <div class="user-info" id="user-info" style="display: none;">
+            <p>当前用户：<span id="current-user"></span></p>
+        </div>
+
+        <!-- 搜索和筛选区域 -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="搜索我的视频...">
+                <button class="search-btn" onclick="searchVideos()">
+                    <span class="search-icon">🔍</span>
+                </button>
+                <button class="upload-btn" onclick="goToUpload()">
+                    <span class="material-icons">add</span>
+                    上传视频
+                </button>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="recent">最近上传</button>
+                <button class="filter-btn" data-filter="favorite">收藏</button>
+            </div>
+        </div>
+
+        <!-- 视频网格 -->
+        <div class="videos-grid" id="videos-grid">
+            <!-- 视频卡片将通过JavaScript动态生成 -->
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>正在加载您的视频...</p>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">📹</div>
+            <h3>暂无视频</h3>
+            <p>您还没有上传任何视频，快去上传您的第一个视频吧！</p>
+        </div>
+
+        <!-- 未登录状态 -->
+        <div class="not-logged-in" id="not-logged-in" style="display: none;">
+            <div class="empty-icon">🔒</div>
+            <h3>请先登录</h3>
+            <p>您需要登录后才能查看自己的视频</p>
+            <button class="magic-button" onclick="window.location.href='login.html'">立即登录</button>
+        </div>
+
+        <!-- 装饰星星 -->
+        <div class="star star-1 star-decoration"></div>
+        <div class="star star-2 star-decoration"></div>
+        <div class="star star-3 star-decoration"></div>
+        <div class="star star-4 star-decoration"></div>
+        <div class="star star-5 star-decoration"></div>
+    </div>
+
+    <script>
+        let allVideos = [];
+        let filteredVideos = [];
+        let currentFilter = 'all';
+        let currentUser = null;
+
+        // 页面加载时检查登录状态并获取视频数据
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            setupEventListeners();
+        });
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            // 从localStorage或sessionStorage获取当前用户信息
+            const userInfo = localStorage.getItem('user') || sessionStorage.getItem('user');  // 改为 'user'
+            
+            if (userInfo) {
+                try {
+                    currentUser = JSON.parse(userInfo);
+                    document.getElementById('current-user').textContent = currentUser.username || currentUser.id;
+                    document.getElementById('user-info').style.display = 'block';
+                    loadUserVideos();
+                } catch (error) {
+                    console.error('解析用户信息失败:', error);
+                    showNotLoggedIn();
+                }
+            } else {
+                showNotLoggedIn();  // 移除模拟用户逻辑
+            }
+        }
+
+        // 显示未登录状态
+        function showNotLoggedIn() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('not-logged-in').style.display = 'flex';
+        }
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 搜索输入框
+            document.getElementById('search-input').addEventListener('input', function() {
+                searchVideos();
+            });
+
+            // 筛选按钮
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    filterVideos();
+                });
+            });
+        }
+
+        // 加载当前用户的视频数据
+        async function loadUserVideos() {
+            if (!currentUser) {
+                showNotLoggedIn();
+                return;
+            }
+
+            try {
+                // 直接从API获取所有视频，然后过滤当前用户的视频
+                const response = await fetch('http://localhost:3000/api/video/list');
+                if (response.ok) {
+                    const data = await response.json();
+                    // 过滤出当前用户上传的视频
+                    allVideos = (data.videos || []).filter(video => video.adminId === currentUser.id);
+                } else {
+                    // 如果API不可用，显示空状态
+                    allVideos = [];
+                }
+                filteredVideos = [...allVideos];
+                renderVideos();
+            } catch (error) {
+                console.error('加载视频失败:', error);
+                allVideos = [];
+                filteredVideos = [];
+                renderVideos();
+            }
+        }
+
+        // 渲染视频列表
+        function renderVideos() {
+            const grid = document.getElementById('videos-grid');
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const notLoggedIn = document.getElementById('not-logged-in');
+
+            loading.style.display = 'none';
+            notLoggedIn.style.display = 'none';
+
+            if (filteredVideos.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'flex';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            grid.style.display = 'grid';
+
+            grid.innerHTML = filteredVideos.map(video => `
+                <div class="video-card" onclick="playVideo('${video.id}')">
+                    <div class="video-thumbnail">
+                        <img src="${video.coverUrl}" alt="${video.title}" loading="lazy">
+                        <div class="video-duration">${video.duration || '未知'}</div>
+                        <div class="play-overlay">
+                            <div class="play-button">▶</div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">${video.title}</h3>
+                        <p class="video-description">${video.description}</p>
+                        <div class="video-meta">
+                            <span class="upload-time">${formatDate(video.uploadTime)}</span>
+                            <span class="video-owner">我的视频</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 搜索视频（仅在当前用户的视频中搜索）
+        function searchVideos() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            filteredVideos = allVideos.filter(video => 
+                video.title.toLowerCase().includes(searchTerm) ||
+                video.description.toLowerCase().includes(searchTerm)
+            );
+            renderVideos();
+        }
+
+        // 筛选视频
+        function filterVideos() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            
+            switch(currentFilter) {
+                case 'recent':
+                    filteredVideos = allVideos.filter(video => 
+                        (video.title.toLowerCase().includes(searchTerm) ||
+                         video.description.toLowerCase().includes(searchTerm))
+                    ).sort((a, b) => new Date(b.uploadTime) - new Date(a.uploadTime));
+                    break;
+                case 'favorite':
+                    // 模拟收藏功能
+                    filteredVideos = allVideos.filter(video => 
+                        (video.title.toLowerCase().includes(searchTerm) ||
+                         video.description.toLowerCase().includes(searchTerm)) &&
+                        Math.random() > 0.5 // 随机模拟收藏状态
+                    );
+                    break;
+                default:
+                    filteredVideos = allVideos.filter(video => 
+                        video.title.toLowerCase().includes(searchTerm) ||
+                        video.description.toLowerCase().includes(searchTerm)
+                    );
+            }
+            renderVideos();
+        }
+
+        // 播放视频
+        function playVideo(videoId) {
+            // 跳转到视频播放页面
+            window.location.href = `player.html?id=${videoId}`;
+        }
+
+        // 格式化日期
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 1) {
+                return '1天前';
+            } else if (diffDays < 7) {
+                return `${diffDays}天前`;
+            } else if (diffDays < 30) {
+                return `${Math.floor(diffDays / 7)}周前`;
+            } else {
+                return date.toLocaleDateString('zh-CN');
+            }
+        }
+
+        // 跳转到上传页面（player.html）
+        function goToUpload() {
+            window.location.href = 'player.html';
+        }
+
+        // 添加星星闪烁动画
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((star, index) => {
+            star.style.animationDelay = `${index * 0.5}s`;
+        });
+    </script>
+</body>
+</html>
