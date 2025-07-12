@@ -13,8 +13,7 @@ const tencentConfig = {
 
 // 验证环境变量是否已设置
 if (!tencentConfig.appId || !tencentConfig.secretId || !tencentConfig.secretKey) {
-    console.error('错误：腾讯云配置环境变量未设置。请检查.env文件中的TENCENT_APP_ID、TENCENT_SECRET_ID和TENCENT_SECRET_KEY');
-    process.exit(1);
+    console.warn('警告：腾讯云配置环境变量未设置。视频上传功能将不可用。请检查.env文件中的TENCENT_APP_ID、TENCENT_SECRET_ID和TENCENT_SECRET_KEY');
 }
 
 // 腾讯云签名生成类（基于官方Java代码转换）
@@ -112,6 +111,14 @@ function writeVideos(videos) {
 router.post('/upload-signature', (req, res) => {
     try {
         console.log('收到上传签名请求');
+        
+        // 检查腾讯云配置是否可用
+        if (!tencentConfig.appId || !tencentConfig.secretId || !tencentConfig.secretKey) {
+            return res.json({
+                success: false,
+                error: '腾讯云配置未设置，视频上传功能不可用'
+            });
+        }
         
         // 创建签名生成器
         const signature = new TencentSignature(

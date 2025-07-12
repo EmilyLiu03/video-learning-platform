@@ -21,6 +21,7 @@
                 <a href="../index.html" class="nav-link">返回首页</a>
                 <a href="intro.html" class="nav-link">课程介绍</a>
                 <a href="playground.html" class="nav-link">Web演练场</a>
+                <button id="terminology-btn" class="nav-link terminology-btn">📚 术语库</button>
                 <a href="login.html" class="nav-link auth-link">登录</a>
                 <a href="signup.html" class="nav-link auth-link signup-btn">注册</a>
             </div>
@@ -230,6 +231,276 @@ document.getElementById('button').addEventListener('click', function() {
         <div class="star star-3 star-decoration"></div>
     </div>
 
+    <!-- 术语库抽屉 -->
+    <div id="terminology-drawer" class="terminology-drawer">
+        <div class="drawer-overlay" id="drawer-overlay"></div>
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h2 class="drawer-title">📚 本地化术语库</h2>
+                <button id="close-drawer" class="close-btn">✕</button>
+            </div>
+            
+            <div class="drawer-search">
+                <div class="search-box">
+                    <input type="text" id="terminology-search" placeholder="搜索术语..." class="search-input">
+                    <button id="search-btn" class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="drawer-body">
+                <div id="terminology-loading" class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>加载术语库中...</p>
+                </div>
+                
+                <div id="terminology-list" class="terminology-list"></div>
+                
+                <div id="terminology-empty" class="empty-state" style="display: none;">
+                    <p>未找到相关术语</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 术语库按钮样式 */
+        .terminology-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .terminology-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 术语库抽屉样式 */
+        .terminology-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .terminology-drawer.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .drawer-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .drawer-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminology-drawer.active .drawer-content {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .drawer-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .drawer-search {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .loading-state, .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .terminology-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .term-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .term-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .term-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .term-chinese {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .term-english {
+            font-size: 14px;
+            color: #667eea;
+            font-style: italic;
+            margin: 0;
+        }
+
+        .term-definitions {
+            margin-top: 12px;
+        }
+
+        .term-definition {
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .term-definition.chinese {
+            border-left: 3px solid #667eea;
+        }
+
+        .term-definition.english {
+            border-left: 3px solid #764ba2;
+        }
+
+        .term-id {
+            font-size: 12px;
+            color: #999;
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .drawer-content {
+                width: 100%;
+            }
+        }
+    </style>
+
     <script>
         // 页面加载动画
         document.addEventListener('DOMContentLoaded', function() {
@@ -239,6 +510,9 @@ document.getElementById('button').addEventListener('click', function() {
             setTimeout(() => {
                 sideTitle.style.animation = 'fadeIn 1s ease-in';
             }, 500);
+            
+            // 初始化术语库抽屉
+            new TerminologyDrawer();
             
             // 添加打字机效果到主标题
             const title = document.querySelector('.course-title');
@@ -316,6 +590,197 @@ document.getElementById('button').addEventListener('click', function() {
                 this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
             });
         });
+        
+        // 术语库功能
+        class TerminologyDrawer {
+            constructor() {
+                this.drawer = document.getElementById('terminology-drawer');
+                this.overlay = document.getElementById('drawer-overlay');
+                this.closeBtn = document.getElementById('close-drawer');
+                this.terminologyBtn = document.getElementById('terminology-btn');
+                this.searchInput = document.getElementById('terminology-search');
+                this.searchBtn = document.getElementById('search-btn');
+                this.terminologyList = document.getElementById('terminology-list');
+                this.loadingState = document.getElementById('terminology-loading');
+                this.emptyState = document.getElementById('terminology-empty');
+                
+                this.terms = [];
+                this.filteredTerms = [];
+                this.searchTimeout = null;
+                
+                this.bindEvents();
+            }
+            
+            bindEvents() {
+                // 打开抽屉
+                this.terminologyBtn.addEventListener('click', () => {
+                    this.openDrawer();
+                });
+                
+                // 关闭抽屉
+                this.closeBtn.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                this.overlay.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                // ESC键关闭
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.drawer.classList.contains('active')) {
+                        this.closeDrawer();
+                    }
+                });
+                
+                // 搜索功能
+                this.searchInput.addEventListener('input', (e) => {
+                    clearTimeout(this.searchTimeout);
+                    this.searchTimeout = setTimeout(() => {
+                        this.searchTerms(e.target.value);
+                    }, 300);
+                });
+                
+                this.searchBtn.addEventListener('click', () => {
+                    this.searchTerms(this.searchInput.value);
+                });
+                
+                // 回车搜索
+                this.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchTerms(e.target.value);
+                    }
+                });
+            }
+            
+            async openDrawer() {
+                this.drawer.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // 如果还没有加载术语，则加载
+                if (this.terms.length === 0) {
+                    await this.loadTerms();
+                }
+            }
+            
+            closeDrawer() {
+                this.drawer.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            async loadTerms() {
+                try {
+                    this.showLoading();
+                    
+                    const response = await fetch('/api/terminology/list');
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.terms = data.terms;
+                        this.filteredTerms = [...this.terms];
+                        this.renderTerms();
+                    } else {
+                        throw new Error(data.error || '加载术语失败');
+                    }
+                } catch (error) {
+                    console.error('加载术语库失败:', error);
+                    this.showError('加载术语库失败，请稍后重试');
+                }
+            }
+            
+            async searchTerms(query) {
+                if (!query.trim()) {
+                    this.filteredTerms = [...this.terms];
+                    this.renderTerms();
+                    return;
+                }
+                
+                try {
+                    this.showLoading();
+                    
+                    const response = await fetch(`/api/terminology/search?q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.filteredTerms = data.terms;
+                        this.renderTerms();
+                    } else {
+                        throw new Error(data.error || '搜索失败');
+                    }
+                } catch (error) {
+                    console.error('搜索术语失败:', error);
+                    this.showError('搜索失败，请稍后重试');
+                }
+            }
+            
+            renderTerms() {
+                this.hideLoading();
+                
+                if (this.filteredTerms.length === 0) {
+                    this.showEmpty();
+                    return;
+                }
+                
+                this.hideEmpty();
+                
+                const html = this.filteredTerms.map(term => `
+                    <div class="term-card" data-term-id="${term.id}">
+                        <div class="term-header">
+                            <div>
+                                <h3 class="term-chinese">${this.escapeHtml(term.chinese)}</h3>
+                                <p class="term-english">${this.escapeHtml(term.english)}</p>
+                            </div>
+                            <span class="term-id">#${term.id}</span>
+                        </div>
+                        <div class="term-definitions">
+                            <div class="term-definition chinese">
+                                <strong>中文释义：</strong>${this.escapeHtml(term.chineseDefinition)}
+                            </div>
+                            <div class="term-definition english">
+                                <strong>English Definition：</strong>${this.escapeHtml(term.englishDefinition)}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                this.terminologyList.innerHTML = html;
+            }
+            
+            showLoading() {
+                this.loadingState.style.display = 'block';
+                this.terminologyList.style.display = 'none';
+                this.emptyState.style.display = 'none';
+            }
+            
+            hideLoading() {
+                this.loadingState.style.display = 'none';
+                this.terminologyList.style.display = 'block';
+            }
+            
+            showEmpty() {
+                this.terminologyList.style.display = 'none';
+                this.emptyState.style.display = 'block';
+            }
+            
+            hideEmpty() {
+                this.emptyState.style.display = 'none';
+            }
+            
+            showError(message) {
+                this.hideLoading();
+                this.terminologyList.innerHTML = `
+                    <div class="error-state">
+                        <p style="color: #e74c3c; text-align: center; padding: 20px;">${message}</p>
+                    </div>
+                `;
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
     </script>
 </body>
 </html>

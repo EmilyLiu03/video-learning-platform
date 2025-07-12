@@ -18,10 +18,12 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 const { router: authRoutes } = require('./routes/auth');
 const videoRoutes = require('./routes/video');
 const adminRoutes = require('./routes/admin');
+const terminologyRoutes = require('./routes/terminology');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/video', videoRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/terminology', terminologyRoutes);
 
 // 静态文件服务 - 主页
 app.get('/', (req, res) => {
