@@ -112,9 +112,12 @@
             // 从localStorage或sessionStorage获取当前用户信息
             const userInfo = localStorage.getItem('user') || sessionStorage.getItem('user');  // 改为 'user'
             
+            console.log('检查登录状态 - 用户信息:', userInfo);
+            
             if (userInfo) {
                 try {
                     currentUser = JSON.parse(userInfo);
+                    console.log('当前用户:', currentUser);
                     document.getElementById('current-user').textContent = currentUser.username || currentUser.id;
                     document.getElementById('user-info').style.display = 'block';
                     loadUserVideos();
@@ -123,6 +126,7 @@
                     showNotLoggedIn();
                 }
             } else {
+                console.log('未找到用户信息，显示未登录状态');
                 showNotLoggedIn();  // 移除模拟用户逻辑
             }
         }
@@ -163,9 +167,27 @@
                 const response = await fetch('http://localhost:3001/api/video/list');
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('获取到的所有视频:', data.videos);
+                    console.log('当前用户ID:', currentUser.id, '用户名:', currentUser.username);
+                    
                     // 过滤出当前用户上传的视频
-                    allVideos = (data.videos || []).filter(video => video.adminId === currentUser.id);
+                    // 兼容不同的用户ID字段：adminId, userId
+                    allVideos = (data.videos || []).filter(video => {
+                        const match = video.adminId === currentUser.id || 
+                                     video.userId === currentUser.id ||
+                                     video.adminId === currentUser.username ||
+                                     video.userId === currentUser.username;
+                        
+                        if (match) {
+                            console.log('匹配的视频:', video.title, '视频adminId:', video.adminId, '视频userId:', video.userId);
+                        }
+                        
+                        return match;
+                    });
+                    
+                    console.log('过滤后的用户视频数量:', allVideos.length);
                 } else {
+                    console.error('API响应失败:', response.status, response.statusText);
                     // 如果API不可用，显示空状态
                     allVideos = [];
                 }
