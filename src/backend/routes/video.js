@@ -142,9 +142,9 @@ router.post('/upload-signature', (req, res) => {
 // 保存用户上传的视频信息
 router.post('/save-video', (req, res) => {
     try {
-        const { userId, title, description, fileId, videoUrl } = req.body;
+        const { userId, title, description, fileId, videoUrl, coverUrl } = req.body;
         
-        console.log('保存视频信息请求:', { userId, title, description, fileId, videoUrl });
+        console.log('保存视频信息请求:', { userId, title, description, fileId, videoUrl, coverUrl });
         
         if (!userId || !title || !fileId || !videoUrl) {
             return res.json({
@@ -161,7 +161,9 @@ router.post('/save-video', (req, res) => {
             description: description || '',
             fileId,
             videoUrl,
+            coverUrl: coverUrl || '', // 添加封面URL支持
             uploadDate: new Date().toISOString(),
+            uploadTime: new Date().toISOString(), // 兼容前端的uploadTime字段
             source: 'tencent_vod' // 标记为腾讯云VOD上传
         };
         
