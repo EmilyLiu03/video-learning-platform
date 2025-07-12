@@ -84,7 +84,7 @@ class VideoPlayer {
                         <span class="material-icons">cloud_upload</span>
                         上传视频
                     </a>
-                    <a href="index.html" class="back-home-btn">
+                    <a href="../index.html" class="back-home-btn">
                         <span class="material-icons">home</span>
                         返回首页
                     </a>

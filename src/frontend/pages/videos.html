@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="../assets/css/videos.css">
+    <!-- 登录验证脚本 -->
+    <script src="../js/auth-guard.js"></script>
+</head>
+    <script src="../js/auth-guard.js"></script>
 </head>
 <body class="magic-bg">
     <!-- 悬浮导航栏 -->
@@ -156,7 +160,7 @@
 
             try {
                 // 直接从API获取所有视频，然后过滤当前用户的视频
-                const response = await fetch('http://localhost:3000/api/video/list');
+                const response = await fetch('http://localhost:3001/api/video/list');
                 if (response.ok) {
                     const data = await response.json();
                     // 过滤出当前用户上传的视频

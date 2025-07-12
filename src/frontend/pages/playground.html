@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web演练场 - 七天速成前端魔法师</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/playground.css">
+    <!-- 登录验证脚本 -->
+    <script src="../js/auth-guard.js"></script>
+    <!-- Monaco Editor -->
+    <script src="https://unpkg.com/monaco-editor@0.44.0/min/vs/loader.js"></script>
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <a href="dashboard.html" class="nav-link">用户中心</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1 class="title-main">🧙‍♂️ Web演练场</h1>
+            <p class="title-sub">在这里施展你的前端魔法</p>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <button class="tool-button" id="runBtn">
+                    <span class="button-icon">▶️</span>
+                    <span class="button-text">运行代码</span>
+                </button>
+                <button class="tool-button" id="clearBtn">
+                    <span class="button-icon">🗑️</span>
+                    <span class="button-text">清空代码</span>
+                </button>
+                <button class="tool-button" id="saveBtn">
+                    <span class="button-icon">💾</span>
+                    <span class="button-text">保存代码</span>
+                </button>
+            </div>
+            <div class="toolbar-right">
+                <select class="language-selector" id="languageSelect">
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="javascript">JavaScript</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="playground-content">
+            <!-- 左侧代码编辑器 -->
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">代码编辑器</h3>
+                    <div class="panel-controls">
+                        <button class="control-btn" id="fullscreenEditor" title="全屏编辑">
+                            <span>⛶</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <div id="editor"></div>
+                </div>
+            </div>
+
+            <!-- 分割线 -->
+            <div class="divider" id="divider"></div>
+
+            <!-- 右侧预览区域 -->
+            <div class="preview-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">预览区域</h3>
+                    <div class="panel-controls">
+                        <button class="control-btn" id="refreshPreview" title="刷新预览">
+                            <span>🔄</span>
+                        </button>
+                        <button class="control-btn" id="fullscreenPreview" title="全屏预览">
+                            <span>⛶</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="preview-container">
+                    <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="../js/playground.js"></script>
+</body>
+</html>

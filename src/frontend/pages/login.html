@@ -107,7 +107,10 @@
                 if (result.success) {
                     showMessage('登录成功！正在跳转...', 'success');
                     setTimeout(() => {
-                        window.location.href = '../index.html';
+                        // 获取登录前想要访问的页面
+                        const returnUrl = sessionStorage.getItem('returnUrl') || '../index.html';
+                        sessionStorage.removeItem('returnUrl');
+                        window.location.href = returnUrl;
                     }, 1000);
                 } else {
                     showMessage(result.error, 'error');
