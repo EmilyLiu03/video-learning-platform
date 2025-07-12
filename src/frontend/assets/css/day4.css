@@ -1,0 +1,423 @@
+/* Day 4 课程页面专用样式 */
+.container {
+    width: 100vw;
+    min-height: 100vh;
+    position: relative;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* 悬浮导航栏样式 */
+.nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: rgba(42, 16, 48, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(244, 236, 200, 0.2);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-wizard {
+    width: 40px;
+    height: 40px;
+    background: url('../images/wizard-hat.svg') center/contain no-repeat;
+    filter: drop-shadow(0 0 8px rgba(244, 236, 200, 0.5));
+}
+
+.nav-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #F4ECC8;
+    font-family: 'Long Cang', 'Uncial Antiqua', cursive;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-link {
+    color: #F4ECC8;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-family: 'Noto Sans SC', 'Kalam', sans-serif;
+}
+
+.nav-link:hover {
+    color: #FFD66D;
+    background: rgba(244, 236, 200, 0.1);
+    transform: translateY(-2px);
+}
+
+.signup-btn {
+    background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+    color: #161414 !important;
+    font-weight: 600;
+}
+
+.signup-btn:hover {
+    background: linear-gradient(180deg, #EEAD08 0%, #FFD66D 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 214, 109, 0.3);
+}
+
+.terminology-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.terminology-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* 侧边标题 - 竖直排列 */
+.side-title {
+    position: fixed;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 70px;
+    font-weight: 400;
+    color: #F4ECC8;
+    line-height: 0.9;
+    z-index: 10;
+    font-family: 'Long Cang', 'Uncial Antiqua', cursive;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+/* 主要内容区域 */
+.content-area {
+    position: fixed;
+    top: 100px;
+    left: 280px;
+    right: 80px;
+    bottom: 80px;
+    z-index: 5;
+    padding: 0;
+    overflow: hidden;
+    background: rgba(244, 236, 200, 0.05);
+    border-radius: 20px;
+    border: 2px solid rgba(244, 236, 200, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* 可滚动的内容容器 */
+.scrollable-content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 40px 60px;
+}
+
+/* 美化滚动条 */
+.scrollable-content::-webkit-scrollbar {
+    width: 16px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: rgba(244, 236, 200, 0.1);
+    border-radius: 12px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #FFD66D 0%, #EEAD08 100%);
+    border-radius: 12px;
+    border: 3px solid rgba(42, 16, 48, 0.1);
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #F4ECC8 0%, #FFD66D 100%);
+}
+
+/* 滚动提示 */
+.scroll-indicator {
+    position: absolute;
+    bottom: 20px;
+    right: 50%;
+    transform: translateX(50%);
+    color: #F4ECC8;
+    font-size: 16px;
+    opacity: 0.8;
+    animation: fadeInOut 2.5s infinite;
+    font-family: 'Noto Sans SC', 'Kalam', sans-serif;
+    pointer-events: none;
+    background: rgba(42, 16, 48, 0.8);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(244, 236, 200, 0.3);
+    font-weight: 300;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* 课程内容样式 */
+.course-content {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #F4ECC8;
+    text-align: left;
+    font-weight: 400;
+    font-family: 'Noto Sans SC', 'Kalam', sans-serif;
+    background: rgba(42, 16, 48, 0.3);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: inset 0 0 30px rgba(244, 236, 200, 0.1);
+}
+
+/* 课程标题 */
+.course-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid rgba(244, 236, 200, 0.2);
+}
+
+.course-title {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #FFD66D;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-family: 'Liu Jian Mao Cao', 'Griffy', cursive;
+}
+
+.course-subtitle {
+    font-size: 24px;
+    color: #F4ECC8;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+/* 术语库抽屉样式 */
+.terminology-drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: rgba(42, 16, 48, 0.95);
+    backdrop-filter: blur(10px);
+    border-left: 2px solid rgba(244, 236, 200, 0.2);
+    z-index: 2000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.terminology-drawer.active {
+    right: 0;
+}
+
+.terminology-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(244, 236, 200, 0.2);
+}
+
+.terminology-header h3 {
+    color: #F4ECC8;
+    margin: 0;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #F4ECC8;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(244, 236, 200, 0.1);
+    transform: rotate(90deg);
+}
+
+.terminology-content {
+    padding: 20px;
+}
+
+.terminology-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(244, 236, 200, 0.05);
+    border-radius: 10px;
+    border-left: 4px solid #FFD66D;
+}
+
+.terminology-item h4 {
+    color: #FFD66D;
+    margin: 0 0 8px 0;
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.terminology-item p {
+    color: #F4ECC8;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 魔法粒子效果 */
+.magic-particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #FFD66D 0%, #F4ECC8 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 214, 109, 0.5);
+}
+
+/* 装饰元素 */
+.magic-book-decoration {
+    position: fixed;
+    bottom: 100px;
+    right: 100px;
+    width: 80px;
+    height: 80px;
+    background: url('../images/magic-book.svg') center/contain no-repeat;
+    opacity: 0.3;
+    z-index: 2;
+    filter: drop-shadow(0 0 10px rgba(255, 214, 109, 0.3));
+}
+
+.star {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #FFD66D 0%, #F4ECC8 100%);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    z-index: 2;
+}
+
+.star-1 {
+    top: 20%;
+    right: 15%;
+    animation-delay: 0s;
+}
+
+.star-2 {
+    top: 60%;
+    right: 8%;
+    animation-delay: 1s;
+}
+
+.star-3 {
+    bottom: 30%;
+    left: 10%;
+    animation-delay: 2s;
+}
+
+/* 响应式设计 */
+@media (max-width: 1600px) {
+    .container {
+        transform: scale(0.9);
+        transform-origin: center center;
+    }
+}
+
+@media (max-width: 1366px) {
+    .container {
+        transform: scale(0.8);
+    }
+    
+    .content-area {
+        left: 250px;
+        right: 60px;
+    }
+    
+    .side-title {
+        left: 40px;
+        font-size: 60px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .container {
+        transform: scale(0.7);
+    }
+    
+    .content-area {
+        left: 200px;
+        right: 40px;
+    }
+    
+    .side-title {
+        left: 30px;
+        font-size: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        transform: scale(0.6);
+    }
+    
+    .content-area {
+        left: 150px;
+        right: 20px;
+    }
+    
+    .side-title {
+        left: 20px;
+        font-size: 40px;
+    }
+    
+    .nav-content {
+        padding: 0 20px;
+    }
+    
+    .nav-right {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 16px;
+    }
+}
