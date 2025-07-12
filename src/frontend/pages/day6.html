@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 6：工程化与全栈思维 - 构筑魔法工坊的框架</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/day6.css">
+    <!-- 登录验证脚本 -->
+    <script src="../js/auth-guard.js"></script>
+    <style>
+        /* Day-6 专用样式覆盖 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+        
+        .code-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .task {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .achievement {
+            background-color: #f0f8ff;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .core-magic {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .core-magic h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .engineering-section, .router-section, .nuxt-section {
+            margin: 30px 0;
+        }
+        
+        .vue-section, .react-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .folder-structure {
+            background-color: #f1f3f4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 15px 0;
+        }
+        
+        code {
+            background-color: #f1f3f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* 术语库抽屉样式 */
+        .terminology-drawer {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminology-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .terminology-drawer.open ~ .drawer-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            font-size: 18px;
+        }
+        
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+        
+        .search-container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 25px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .terminology-list {
+            display: block;
+        }
+        
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #888;
+            text-align: center;
+        }
+        
+        .empty-state p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .terminology-item {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .terminology-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .terminology-item h3 {
+            margin: 0 0 12px 0;
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .terminology-item p {
+            margin: 8px 0;
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .terminology-item strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            .terminology-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <a href="day1.html" class="nav-link">Day 1</a>
+                <a href="day2.html" class="nav-link">Day 2</a>
+                <a href="day3.html" class="nav-link">Day 3</a>
+                <a href="day4.html" class="nav-link">Day 4</a>
+                <a href="day5.html" class="nav-link">Day 5</a>
+                <a href="day7.html" class="nav-link">Day 7</a>
+                <a href="playground.html" class="nav-link">Web演练场</a>
+                <button id="terminology-btn" class="nav-link terminology-btn">📚 术语库</button>
+                <a href="login.html" class="nav-link auth-link">登录</a>
+                <a href="signup.html" class="nav-link auth-link signup-btn">注册</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 魔法粒子效果 -->
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <h1><span class="emoji">🏗️</span>Day 6：工程化与全栈思维 - 构筑魔法工坊的框架</h1>
+        
+        <p>欢迎来到魔法学徒高阶课堂，今天你将不仅关注一个页面，而是整个应用的架构！从组织项目结构到使用全栈框架，我们将接触 Vue 与 React 各自的"后端连接术"！</p>
+
+        <div class="core-magic">
+            <h2><span class="emoji">🔮</span>今日核心魔法</h2>
+            <ul>
+                <li><strong>Vite 插件与环境配置</strong>：项目初始化的加速器与定制器</li>
+                <li><strong>Vue Router</strong>：构建可切换页面的多视图系统</li>
+                <li><strong>Next.js</strong>：React 的全栈法术门派，静态生成（SSG）入门</li>
+                <li><strong>Nuxt.js</strong>：Vue 的服务端渲染之道，异步数据获取初探</li>
+            </ul>
+        </div>
+
+        <div class="engineering-section">
+            <h2><span class="emoji">🧰</span>第一节：Vite 工程化配置</h2>
+            <p>Vite 不只是开发服务器，更是你工程架构的魔法启动器！</p>
+        </div>
+        
+        <div class="code-block">
+npm install -D vite-plugin-checker
+        </div>
+
+        <p>配置插件（<strong>vite.config.js</strong>）：</p>
+        <div class="code-block">
+import checker from 'vite-plugin-checker';
+
+export default {
+  plugins: [
+    checker({ typescript: true }),
+  ],
+};
+        </div>
+
+        <div class="highlight">
+            <h3><span class="emoji">✨</span>还可以配置：</h3>
+            <ul>
+                <li>环境变量 .env</li>
+                <li>别名设置 resolve.alias</li>
+                <li>自动引入组件等插件支持</li>
+            </ul>
+        </div>
+
+        <div class="router-section">
+            <h2><span class="emoji">🧭</span>第二节：Vue Router 页面切换魔法</h2>
+            <p>让你的 Vue 应用拥有多个页面，只需几个步骤！</p>
+        </div>
+        
+        <div class="vue-section">
+            <p><strong>安装并配置：</strong></p>
+            <div class="code-block">
+npm install vue-router
+            </div>
+
+            <p><strong>创建路由配置：</strong></p>
+            <div class="code-block">
+// router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../pages/Home.vue';
+import About from '../pages/About.vue';
+
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About },
+];
+
+export default createRouter({
+  history: createWebHistory(),
+  routes,
+});
+            </div>
+
+            <p><strong>在 main.js 中挂载：</strong></p>
+            <div class="code-block">
+import router from './router';
+createApp(App).use(router).mount('#app');
+            </div>
+
+            <p><strong>在模板中切换页面：</strong></p>
+            <div class="code-block">
+&lt;router-link to="/"&gt;首页&lt;/router-link&gt;
+&lt;router-link to="/about"&gt;关于&lt;/router-link&gt;
+&lt;router-view&gt;&lt;/router-view&gt;
+            </div>
+        </div>
+
+        <h2><span class="emoji">🌀</span>第三节：Next.js - React 的全栈之道</h2>
+        <p>Next.js 让你用 React 写出能运行在服务端的页面（SSR 或 SSG）！</p>
+        
+        <div class="react-section">
+            <p><strong>快速启动：</strong></p>
+            <div class="code-block">
+npx create-next-app@latest next-magic
+cd next-magic
+npm run dev
+            </div>
+
+            <p><strong>每个文件就是一个页面（Pages 路由）：</strong></p>
+            <div class="folder-structure">
+pages/
+  index.js      --> /
+  about.js      --> /about
+            </div>
+
+            <p><strong>添加静态数据（SSG）：</strong></p>
+            <div class="code-block">
+export async function getStaticProps() {
+  return {
+    props: {
+      message: "你好，Next 世界！"
+    }
+  };
+}
+            </div>
+        </div>
+
+        <div class="nuxt-section">
+            <h2><span class="emoji">🌐</span>第四节：Nuxt.js - Vue 的全栈大法</h2>
+            <p>Nuxt.js 是基于 Vue 的服务端渲染框架，适合构建内容型网站与应用。</p>
+        </div>
+        
+        <div class="vue-section">
+            <p><strong>安装与启动：</strong></p>
+            <div class="code-block">
+npx nuxi init nuxt-magic
+cd nuxt-magic
+npm install
+npm run dev
+            </div>
+
+            <p><strong>页面即路由：</strong></p>
+            <div class="folder-structure">
+pages/
+  index.vue     --> /
+  about.vue     --> /about
+            </div>
+
+            <p><strong>获取异步数据：</strong></p>
+            <div class="code-block">
+&lt;script setup&gt;
+const { data } = await useFetch('/api/magic');
+&lt;/script&gt;
+            </div>
+        </div>
+
+        <div class="achievement">
+            <h2><span class="emoji">✅</span>今日成就 · Lv6 项目结构师</h2>
+            <p>今天你收获了前端工程与全栈的初步能力，包括：</p>
+            <ul>
+                <li>用 Vite 插件优化项目开发体验</li>
+                <li>构建多页面应用（SPA）并实现页面跳转</li>
+                <li>使用 Next / Nuxt 构建简单的全栈页面</li>
+                <li>初步理解 SSR（服务端渲染）与 SSG（静态生成）的概念</li>
+            </ul>
+            <p><span class="emoji">🌟</span>恭喜你，已经触及"前后贯通"的魔法系统边界。下一步，将是最终篇章--你的毕业作品！</p>
+        </div>
+    </div>
+
+    <!-- 术语库抽屉 -->
+    <div id="terminology-drawer" class="terminology-drawer">
+        <div class="drawer-header">
+            <h2 class="drawer-title">术语库</h2>
+            <button id="close-drawer" class="close-btn">×</button>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="terminology-search" class="search-input" placeholder="搜索术语...">
+                <button id="search-btn" class="search-btn">🔍</button>
+            </div>
+        </div>
+        <div class="drawer-body">
+            <div id="terminology-loading" class="loading-state" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div>加载中...</div>
+            </div>
+            <div id="terminology-list" class="terminology-list"></div>
+            <div id="terminology-empty" class="empty-state" style="display: none;">
+                暂无相关术语
+            </div>
+        </div>
+    </div>
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 魔法粒子跟随鼠标效果
+            const particles = document.querySelectorAll('.magic-particle');
+            
+            document.addEventListener('mousemove', function(e) {
+                particles.forEach((particle, index) => {
+                    const delay = index * 50;
+                    setTimeout(() => {
+                        const x = e.clientX + Math.random() * 100 - 50;
+                        const y = e.clientY + Math.random() * 100 - 50;
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                    }, delay);
+                });
+            });
+            
+            // 代码块悬停效果
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                });
+                
+                block.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                });
+            });
+            
+            // 导航栏滚动效果
+            let lastScrollTop = 0;
+            const navbar = document.querySelector('.nav-bar');
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > lastScrollTop) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+        });
+        
+        // 术语库功能
+        class TerminologyDrawer {
+            constructor() {
+                this.drawer = document.querySelector('.terminology-drawer');
+                this.overlay = document.querySelector('.drawer-overlay');
+                this.closeBtn = document.querySelector('.close-btn');
+                this.searchInput = document.querySelector('.search-input');
+                this.searchBtn = document.querySelector('.search-btn');
+                this.terminologyList = document.querySelector('.terminology-list');
+                this.loadingState = document.querySelector('.loading-state');
+                this.emptyState = document.querySelector('.empty-state');
+                
+                this.bindEvents();
+                this.loadTerminologies();
+            }
+            
+            bindEvents() {
+                // 打开抽屉
+                document.querySelector('.terminology-btn').addEventListener('click', () => {
+                    this.openDrawer();
+                });
+                
+                // 关闭抽屉
+                this.closeBtn.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                this.overlay.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                // 搜索功能
+                this.searchBtn.addEventListener('click', () => {
+                    this.searchTerminologies();
+                });
+                
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchTerminologies();
+                    }
+                });
+            }
+            
+            openDrawer() {
+                this.drawer.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeDrawer() {
+                this.drawer.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            
+            async loadTerminologies() {
+                this.showLoading();
+                
+                try {
+                    const response = await fetch('/api/terminology/list');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch terminologies');
+                    }
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.allTerminologies = data.terms || [];
+                        this.renderTerminologies(this.allTerminologies);
+                    } else {
+                        throw new Error(data.error || '获取术语失败');
+                    }
+                } catch (error) {
+                    console.error('加载术语失败:', error);
+                    this.showEmpty();
+                }
+            }
+            
+            async searchTerminologies() {
+                const query = this.searchInput.value.trim();
+                if (!query) {
+                    this.renderTerminologies(this.allTerminologies || []);
+                    return;
+                }
+                
+                try {
+                    this.showLoading();
+                    
+                    const response = await fetch(`/api/terminology/search?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) {
+                        throw new Error('Search failed');
+                    }
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.renderTerminologies(data.terms || []);
+                    } else {
+                        throw new Error(data.error || '搜索失败');
+                    }
+                } catch (error) {
+                    console.error('搜索术语失败:', error);
+                    this.showEmpty();
+                }
+            }
+            
+            renderTerminologies(terminologies) {
+                this.hideLoading();
+                this.hideEmpty();
+                
+                if (terminologies.length === 0) {
+                    this.showEmpty();
+                    return;
+                }
+                
+                this.terminologyList.innerHTML = terminologies.map(term => `
+                    <div class="terminology-item">
+                        <h3>${term.chinese} (${term.english})</h3>
+                        <p><strong>中文定义：</strong>${term.definition_chinese}</p>
+                        <p><strong>英文定义：</strong>${term.definition_english}</p>
+                    </div>
+                `).join('');
+            }
+            
+            showLoading() {
+                this.loadingState.style.display = 'flex';
+                this.terminologyList.style.display = 'none';
+                this.emptyState.style.display = 'none';
+            }
+            
+            hideLoading() {
+                this.loadingState.style.display = 'none';
+                this.terminologyList.style.display = 'block';
+            }
+            
+            showEmpty() {
+                this.emptyState.style.display = 'flex';
+                this.terminologyList.style.display = 'none';
+                this.loadingState.style.display = 'none';
+            }
+            
+            hideEmpty() {
+                this.emptyState.style.display = 'none';
+            }
+        }
+        
+        // 初始化术语库
+        new TerminologyDrawer();
+    </script>
+</body>
+</html>

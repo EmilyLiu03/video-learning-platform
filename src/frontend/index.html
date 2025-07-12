@@ -90,12 +90,12 @@
         const courseItems = document.querySelectorAll('.course-item');
         const coursePages = [
             'pages/day1.html',
-            'pages/day2.html', // 待创建
-            'pages/day3.html', // 待创建
-            'pages/day4.html', // 待创建
-            'pages/day5.html', // 待创建
-            'pages/day6.html', // 待创建
-            'pages/day7.html'  // 待创建
+            'pages/day2.html',
+            'pages/day3.html',
+            'pages/day4.html',
+            'pages/day5.html',
+            'pages/day6.html',
+            'pages/day7.html'
         ];
         
         courseItems.forEach((item, index) => {
@@ -116,13 +116,7 @@
                 // 检查登录状态
                 if (localStorage.getItem('token')) {
                     // 已登录，跳转到对应课程页面
-                    if (index === 0) {
-                        // 第一天课程已创建
-                        window.location.href = coursePages[index];
-                    } else {
-                        // 其他课程页面待创建
-                        alert(`第${index + 1}天课程即将上线，敬请期待！`);
-                    }
+                    window.location.href = coursePages[index];
                 } else {
                     // 未登录，提示并跳转到登录页面
                     alert('请先登录后再访问课程内容');

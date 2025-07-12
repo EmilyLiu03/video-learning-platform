@@ -3,11 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day 1: 网页构成基础 - 七天速成前端魔法师</title>
+    <title>Day 1：HTML、CSS、JavaScript 基础 - 前端魔法的三大支柱</title>
     <link rel="stylesheet" href="../assets/css/common.css">
     <link rel="stylesheet" href="../assets/css/day1.css">
     <!-- 登录验证脚本 -->
     <script src="../js/auth-guard.js"></script>
+    <style>
+        /* Day-1 专用样式覆盖 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+        
+        .code-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .task {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .achievement {
+            background-color: #f0f8ff;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .core-magic {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .core-magic h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .demo-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+    </style>
 </head>
 <body class="magic-bg">
     <!-- 悬浮导航栏 -->
@@ -36,90 +155,100 @@
         <div class="magic-particle"></div>
         <div class="magic-particle"></div>
 
-        <!-- 侧边标题 -->
-        <div class="side-title">
-            第<br/>一<br/>天
+
+
+        <h1><span class="emoji">🌟</span>Day 1：HTML、CSS、JavaScript 基础 - 前端魔法的三大支柱</h1>
+        
+        <p>欢迎来到前端魔法的世界！今天我们将学习构建网页的三大核心技术：HTML、CSS 和 JavaScript。这三种技术就像魔法的三大支柱，HTML 构建结构，CSS 美化外观，JavaScript 赋予生命力。</p>
+
+        <div class="core-magic">
+            <h2><span class="emoji">💡</span>今日核心魔法</h2>
+            <ul>
+                <li><strong>HTML 结构魔法</strong>：学会用标签构建网页骨架</li>
+                <li><strong>CSS 样式魔法</strong>：掌握美化网页的艺术</li>
+                <li><strong>JavaScript 交互魔法</strong>：为网页注入动态生命力</li>
+                <li><strong>三者融合</strong>：创建第一个完整的网页作品</li>
+            </ul>
         </div>
 
-        <!-- 主要内容区域 -->
-        <div class="content-area">
-            <div class="scrollable-content">
-                <div class="course-content fade-in">
-                    <!-- 课程标题 -->
-                    <div class="course-header">
-                        <h1 class="course-title">🌟 Day 1: 网页构成基础</h1>
-                        <p class="course-subtitle">掌握HTML、CSS、JavaScript三大魔法体系</p>
-                    </div>
+        <h2><span class="emoji">🧰</span>准备工作</h2>
+        <p>在开始今天的魔法修炼之前，请确保你有一个文本编辑器（如 VS Code、Sublime Text 或 Notepad++）和一个现代浏览器（Chrome、Firefox、Safari 或 Edge）。</p>
 
-                    <!-- 学习目标 -->
-                    <div class="learning-objectives">
-                        <h2>📚 今日学习目标</h2>
-                        <div class="objectives-list">
-                            <div class="objective-item">
-                                <span class="objective-icon">🏗️</span>
-                                <span class="objective-text">理解HTML的结构化标记语言本质</span>
-                            </div>
-                            <div class="objective-item">
-                                <span class="objective-icon">🎨</span>
-                                <span class="objective-text">掌握CSS样式设计的基本语法和选择器</span>
-                            </div>
-                            <div class="objective-item">
-                                <span class="objective-icon">⚡</span>
-                                <span class="objective-text">了解JavaScript为网页添加交互性的能力</span>
-                            </div>
-                            <div class="objective-item">
-                                <span class="objective-icon">🔧</span>
-                                <span class="objective-text">能够创建一个简单的静态网页</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 课程内容 -->
-                    <div class="course-sections">
-                        <!-- HTML部分 -->
-                        <div class="section">
-                            <h2 class="section-title">🏗️ HTML - 网页的骨架</h2>
-                            <div class="section-content">
-                                <p>HTML（HyperText Markup Language）是构建网页的基础语言，就像建筑的框架一样，为网页提供结构和内容。</p>
-                                
-                                <h3>基本结构</h3>
-                                <div class="code-example">
-                                    <pre><code>&lt;!DOCTYPE html&gt;
+        <h2><span class="emoji">🏗️</span>第一节：HTML - 网页的骨架</h2>
+        <p>HTML（HyperText Markup Language）是构建网页的基础语言。它使用标签来定义网页的结构和内容。</p>
+        
+        <div class="task">
+            <h3><span class="emoji">🔍</span>基础HTML结构：</h3>
+            <div class="code-block">
+&lt;!DOCTYPE html&gt;
 &lt;html lang="zh-CN"&gt;
 &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
     &lt;title&gt;我的第一个网页&lt;/title&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    &lt;h1&gt;欢迎来到我的网页&lt;/h1&gt;
-    &lt;p&gt;这是一个段落。&lt;/p&gt;
+    &lt;h1&gt;欢迎来到我的网页！&lt;/h1&gt;
+    &lt;p&gt;这是我用HTML创建的第一个段落。&lt;/p&gt;
 &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-                                </div>
-                                
-                                <h3>常用标签</h3>
-                                <ul class="tag-list">
-                                    <li><code>&lt;h1&gt;-&lt;h6&gt;</code> - 标题标签</li>
-                                    <li><code>&lt;p&gt;</code> - 段落标签</li>
-                                    <li><code>&lt;div&gt;</code> - 容器标签</li>
-                                    <li><code>&lt;span&gt;</code> - 行内容器</li>
-                                    <li><code>&lt;a&gt;</code> - 链接标签</li>
-                                    <li><code>&lt;img&gt;</code> - 图片标签</li>
-                                </ul>
-                            </div>
-                        </div>
+&lt;/html&gt;
+            </div>
+        </div>
 
-                        <!-- CSS部分 -->
-                        <div class="section">
-                            <h2 class="section-title">🎨 CSS - 网页的美妆师</h2>
-                            <div class="section-content">
-                                <p>CSS（Cascading Style Sheets）负责网页的样式和布局，让网页变得美观和吸引人。</p>
-                                
-                                <h3>基本语法</h3>
-                                <div class="code-example">
-                                    <pre><code>/* 选择器 { 属性: 值; } */
+        <h3>常用HTML标签</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>标签</th>
+                        <th>作用</th>
+                        <th>示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>&lt;h1&gt;-&lt;h6&gt;</td>
+                        <td>标题标签</td>
+                        <td>&lt;h1&gt;主标题&lt;/h1&gt;</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;p&gt;</td>
+                        <td>段落标签</td>
+                        <td>&lt;p&gt;这是一个段落&lt;/p&gt;</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;div&gt;</td>
+                        <td>容器标签</td>
+                        <td>&lt;div&gt;内容区域&lt;/div&gt;</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;a&gt;</td>
+                        <td>链接标签</td>
+                        <td>&lt;a href="https://example.com"&gt;链接&lt;/a&gt;</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;img&gt;</td>
+                        <td>图片标签</td>
+                        <td>&lt;img src="image.jpg" alt="描述"&gt;</td>
+                    </tr>
+                    <tr>
+                        <td>&lt;ul&gt;/&lt;li&gt;</td>
+                        <td>无序列表</td>
+                        <td>&lt;ul&gt;&lt;li&gt;项目1&lt;/li&gt;&lt;/ul&gt;</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><span class="emoji">🎨</span>第二节：CSS - 网页的美妆师</h2>
+        <p>CSS（Cascading Style Sheets）负责网页的视觉呈现。它可以控制颜色、字体、布局等所有视觉元素。</p>
+
+        <div class="task">
+            <h3><span class="emoji">🔍</span>CSS基础语法：</h3>
+            <div class="code-block">
+/* 选择器 { 属性: 值; } */
 h1 {
-    color: #333;
+    color: #2c3e50;
     font-size: 24px;
     text-align: center;
 }
@@ -128,54 +257,235 @@ h1 {
     width: 80%;
     margin: 0 auto;
     padding: 20px;
-}</code></pre>
-                                </div>
-                                
-                                <h3>常用属性</h3>
-                                <ul class="property-list">
-                                    <li><code>color</code> - 文字颜色</li>
-                                    <li><code>background-color</code> - 背景颜色</li>
-                                    <li><code>font-size</code> - 字体大小</li>
-                                    <li><code>margin</code> - 外边距</li>
-                                    <li><code>padding</code> - 内边距</li>
-                                    <li><code>border</code> - 边框</li>
-                                </ul>
-                            </div>
-                        </div>
+    background-color: #f8f9fa;
+}
 
-                        <!-- JavaScript部分 -->
-                        <div class="section">
-                            <h2 class="section-title">⚡ JavaScript - 网页的魔法师</h2>
-                            <div class="section-content">
-                                <p>JavaScript为网页添加交互性和动态功能，让静态的网页变得生动有趣。</p>
-                                
-                                <h3>基本语法</h3>
-                                <div class="code-example">
-                                    <pre><code>// 变量声明
-let message = "Hello, World!";
-const pi = 3.14159;
+#header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+}
+            </div>
+        </div>
+
+        <h3>CSS选择器类型</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>选择器</th>
+                        <th>语法</th>
+                        <th>作用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>标签选择器</td>
+                        <td>h1 { }</td>
+                        <td>选择所有h1标签</td>
+                    </tr>
+                    <tr>
+                        <td>类选择器</td>
+                        <td>.class { }</td>
+                        <td>选择class="class"的元素</td>
+                    </tr>
+                    <tr>
+                        <td>ID选择器</td>
+                        <td>#id { }</td>
+                        <td>选择id="id"的元素</td>
+                    </tr>
+                    <tr>
+                        <td>后代选择器</td>
+                        <td>div p { }</td>
+                        <td>选择div内的所有p标签</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="highlight">
+            <h3><span class="emoji">✨</span>CSS常用属性：</h3>
+            <ul>
+                <li><strong>color</strong>：文字颜色</li>
+                <li><strong>background-color</strong>：背景颜色</li>
+                <li><strong>font-size</strong>：字体大小</li>
+                <li><strong>margin</strong>：外边距</li>
+                <li><strong>padding</strong>：内边距</li>
+                <li><strong>border</strong>：边框</li>
+                <li><strong>width/height</strong>：宽度/高度</li>
+                <li><strong>display</strong>：显示方式</li>
+            </ul>
+        </div>
+
+        <h2><span class="emoji">⚡</span>第三节：JavaScript - 网页的魔法师</h2>
+        <p>JavaScript 是一种编程语言，它为网页添加交互性和动态功能。从简单的按钮点击到复杂的动画效果，JavaScript 都能实现。</p>
+
+        <div class="task">
+            <h3><span class="emoji">🔍</span>JavaScript基础语法：</h3>
+            <div class="code-block">
+// 变量声明
+let userName = "魔法师";
+const magicPower = 100;
 
 // 函数定义
-function greet(name) {
-    return "你好, " + name + "!";
+function castSpell(spellName) {
+    return "施展了" + spellName + "魔法！";
 }
 
 // 事件处理
-document.getElementById('button').addEventListener('click', function() {
-    alert('按钮被点击了!');
-});</code></pre>
-                                </div>
-                                
-                                <h3>核心概念</h3>
-                                <ul class="concept-list">
-                                    <li><strong>变量</strong> - 存储数据的容器</li>
-                                    <li><strong>函数</strong> - 可重复使用的代码块</li>
-                                    <li><strong>事件</strong> - 用户交互的响应</li>
-                                    <li><strong>DOM</strong> - 文档对象模型</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+document.getElementById('magic-btn').addEventListener('click', function() {
+    alert(castSpell("火球术"));
+});
+
+// DOM操作
+document.querySelector('.title').textContent = "标题已被魔法改变！";
+document.querySelector('.box').style.backgroundColor = "blue";
+            </div>
+        </div>
+
+        <h3>JavaScript核心概念</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>概念</th>
+                        <th>说明</th>
+                        <th>示例</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>变量</td>
+                        <td>存储数据的容器</td>
+                        <td>let name = "小明";</td>
+                    </tr>
+                    <tr>
+                        <td>函数</td>
+                        <td>可重复使用的代码块</td>
+                        <td>function greet() { ... }</td>
+                    </tr>
+                    <tr>
+                        <td>事件</td>
+                        <td>用户交互的响应</td>
+                        <td>click, hover, submit</td>
+                    </tr>
+                    <tr>
+                        <td>DOM</td>
+                        <td>文档对象模型</td>
+                        <td>document.getElementById()</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2><span class="emoji">🎨</span>第四节：HTML/CSS/JavaScript 三者融合</h2>
+        <p>现在让我们将三种技术结合起来，创建一个真正的交互式网页！</p>
+
+        <div class="core-magic">
+            <h3><span class="emoji">✨</span>魔法变色盒子</h3>
+            <p>这是一个完整的示例，展示了HTML、CSS和JavaScript如何协同工作：</p>
+            
+            <div class="code-block">
+&lt;!-- HTML结构 --&gt;
+&lt;div class="magic-box" id="colorBox"&gt;
+    &lt;h3&gt;点击我改变颜色！&lt;/h3&gt;
+    &lt;button onclick="changeColor()"&gt;魔法按钮&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;!-- CSS样式 --&gt;
+&lt;style&gt;
+.magic-box {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    border-radius: 15px;
+    text-align: center;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.magic-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+&lt;/style&gt;
+
+&lt;!-- JavaScript交互 --&gt;
+&lt;script&gt;
+function changeColor() {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    document.getElementById('colorBox').style.backgroundColor = randomColor;
+}
+&lt;/script&gt;
+            </div>
+            
+            <div class="demo-button" onclick="demoMagicBox()">
+                <span class="emoji">🎭</span> 点击体验魔法盒子
+            </div>
+        </div>
+
+        <h2><span class="emoji">🔧</span>第五节：开发工具与最佳实践</h2>
+        
+        <div class="achievement">
+            <h3><span class="emoji">🛠️</span>推荐开发工具：</h3>
+            <ul>
+                <li><strong>VS Code</strong> - 最受欢迎的代码编辑器</li>
+                <li><strong>Chrome DevTools</strong> - 浏览器开发者工具</li>
+                <li><strong>Live Server</strong> - 实时预览插件</li>
+                <li><strong>Prettier</strong> - 代码格式化工具</li>
+            </ul>
+        </div>
+
+        <div class="task">
+            <h3><span class="emoji">📝</span>编程最佳实践：</h3>
+            <ul>
+                <li><strong>语义化标签</strong> - 使用有意义的HTML标签</li>
+                <li><strong>代码整洁</strong> - 保持代码简洁易读</li>
+                <li><strong>注释说明</strong> - 为复杂逻辑添加注释</li>
+                <li><strong>兼容性测试</strong> - 在不同浏览器中测试</li>
+            </ul>
+        </div>
+
+        <h2><span class="emoji">🐛</span>第六节：调试与问题解决</h2>
+        
+        <div class="highlight">
+            <h3><span class="emoji">🔍</span>常见问题排查：</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>问题类型</th>
+                            <th>排查方法</th>
+                            <th>解决工具</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>控制台错误</td>
+                            <td>查看浏览器控制台</td>
+                            <td>F12 → Console</td>
+                        </tr>
+                        <tr>
+                            <td>元素检查</td>
+                            <td>检查HTML结构</td>
+                            <td>F12 → Elements</td>
+                        </tr>
+                        <tr>
+                            <td>CSS样式检查</td>
+                            <td>查看样式应用情况</td>
+                            <td>F12 → Styles</td>
+                        </tr>
+                        <tr>
+                            <td>HTML结构检查</td>
+                            <td>验证标签闭合</td>
+                            <td>HTML Validator</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
                     <!-- 实践练习 -->
                     <div class="practice-section">
@@ -673,14 +983,17 @@ document.getElementById('button').addEventListener('click', function() {
                     this.showLoading();
                     
                     const response = await fetch('/api/terminology/list');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch terminologies');
+                    }
                     const data = await response.json();
                     
                     if (data.success) {
-                        this.terms = data.terms;
+                        this.terms = data.terms || [];
                         this.filteredTerms = [...this.terms];
                         this.renderTerms();
                     } else {
-                        throw new Error(data.error || '加载术语失败');
+                        throw new Error(data.error || '获取术语失败');
                     }
                 } catch (error) {
                     console.error('加载术语库失败:', error);
@@ -699,10 +1012,13 @@ document.getElementById('button').addEventListener('click', function() {
                     this.showLoading();
                     
                     const response = await fetch(`/api/terminology/search?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) {
+                        throw new Error('Search failed');
+                    }
                     const data = await response.json();
                     
                     if (data.success) {
-                        this.filteredTerms = data.terms;
+                        this.filteredTerms = data.terms || [];
                         this.renderTerms();
                     } else {
                         throw new Error(data.error || '搜索失败');

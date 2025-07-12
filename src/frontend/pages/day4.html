@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4：Vue3 核心概念 - 魔法炼金术入门 - 前端魔法师</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/day4.css">
+    <!-- 登录验证脚本 -->
+    <script src="../js/auth-guard.js"></script>
+    <style>
+        /* Day-4 专用样式覆盖 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+        
+        .code-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .task {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .achievement {
+            background-color: #f0f8ff;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .core-magic {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .core-magic h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .reactive-section, .sfc-section, .props-section, .render-section {
+            margin: 30px 0;
+        }
+        
+        .vue-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .folder-structure {
+            background-color: #f1f3f4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 15px 0;
+        }
+        
+        code {
+            background-color: #f1f3f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* 术语库抽屉样式 */
+        .terminology-drawer {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95));
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: -10px 0 50px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminology-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        
+        .terminology-drawer.open ~ .drawer-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* 术语库按钮样式 */
+        .terminology-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .terminology-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .drawer-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            font-size: 18px;
+        }
+        
+        .close-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: scale(1.05);
+        }
+        
+        .drawer-search {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 48px 12px 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            outline: none;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+        
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .terminology-list {
+            padding: 16px;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .empty-state::before {
+            content: '📚';
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .terminology-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminology-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .terminology-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(102, 126, 234, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .terminology-item:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .terminology-item h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+            margin: 0 0 12px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .terminology-item p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 8px 0;
+            color: #4a5568;
+        }
+        
+        .terminology-item p strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .terminology-drawer {
+                width: 100vw;
+                right: -100vw;
+            }
+            
+            .drawer-header {
+                padding: 20px 16px;
+            }
+            
+            .terminology-list {
+                padding: 12px;
+            }
+            
+            .terminology-item {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <a href="day1.html" class="nav-link">Day 1</a>
+                <a href="day2.html" class="nav-link">Day 2</a>
+                <a href="day3.html" class="nav-link">Day 3</a>
+                <a href="day5.html" class="nav-link">Day 5</a>
+                <a href="playground.html" class="nav-link">Web演练场</a>
+                <button id="terminology-btn" class="nav-link terminology-btn">📚 术语库</button>
+                <a href="login.html" class="nav-link auth-link">登录</a>
+                <a href="signup.html" class="nav-link auth-link signup-btn">注册</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 魔法粒子效果 -->
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+
+
+
+        <h1><span class="emoji">⚗️</span>Day 4：Vue3 核心概念 - 魔法炼金术入门</h1>
+        
+        <p>今天，我们不再仅仅操控 DOM，而是走进组件魔法的世界，构建真正的"活网页"。Vue 是现代前端开发的主力魔法语言之一，而 Vite 就是它的召唤阵。</p>
+
+        <div class="core-magic">
+            <h2><span class="emoji">🔮</span>今日核心魔法</h2>
+            <ul>
+                <li><strong>项目初始化</strong>：使用 Vite 快速创建 Vue 项目</li>
+                <li><strong>响应式 API</strong>：ref / reactive / watch 的神奇反应系统</li>
+                <li><strong>单文件组件结构 SFC</strong>：&lt;template&gt;、&lt;script setup&gt;、&lt;style&gt;</li>
+                <li><strong>Props 与事件</strong>：组件间通信的传音咒</li>
+                <li><strong>条件渲染与列表渲染</strong>：v-if, v-for 构建动态页面</li>
+            </ul>
+        </div>
+
+        <h2><span class="emoji">🧰</span>准备工作</h2>
+        <p>使用 Vite 创建一个 Vue3 项目：</p>
+        
+        <div class="code-block">
+npm create vite@latest vue-magic -- --template vue
+cd vue-magic
+npm install
+npm run dev
+        </div>
+
+        <p>打开项目，结构大致如下：</p>
+        <div class="folder-structure">
+src/
+├── App.vue
+├── main.js
+└── components/
+        </div>
+
+        <p>你将在这里练习所有核心功能！</p>
+
+        <div class="reactive-section">
+            <h2><span class="emoji">🧱</span>第一节：响应式魔法初现</h2>
+            <p>响应式 API 是 Vue3 的最大亮点：当你更改数据，界面自动更新，无需手动操作 DOM！</p>
+        </div>
+        
+        <div class="vue-section">
+            <div class="code-block">
+&lt;script setup&gt;
+import { ref } from 'vue';
+
+const count = ref(0);
+function increase() {
+  count.value++;
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;h2&gt;计数器：{{ count }}&lt;/h2&gt;
+  &lt;button @click="increase"&gt;+1&lt;/button&gt;
+&lt;/template&gt;
+            </div>
+        </div>
+
+        <div class="sfc-section">
+            <h2><span class="emoji">🧩</span>第二节：单文件组件结构 SFC</h2>
+            <p>Vue 文件中有三部分组成：</p>
+        </div>
+        
+        <div class="code-block">
+&lt;template&gt; 显示结构 &lt;/template&gt;
+&lt;script setup&gt; 逻辑代码 &lt;/script&gt;
+&lt;style scoped&gt; 样式（只作用于本组件） &lt;/style&gt;
+        </div>
+
+        <p>你将习惯使用这种组织方式，让每个功能模块清晰独立。</p>
+
+        <div class="props-section">
+            <h2><span class="emoji">🧙‍♀️</span>第三节：组件通信 - Props 与事件传递</h2>
+            <p>把数据"传"给子组件，用事件"传"回来！</p>
+        </div>
+        
+        <p><strong>父组件中：</strong></p>
+        <div class="code-block">
+&lt;MyButton :label="'点我'" @clicked="handleClick" /&gt;
+        </div>
+
+        <p><strong>子组件（MyButton.vue）中：</strong></p>
+        <div class="code-block">
+&lt;script setup&gt;
+defineProps(['label']);
+const emit = defineEmits(['clicked']);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;button @click="emit('clicked')"&gt;{{ label }}&lt;/button&gt;
+&lt;/template&gt;
+        </div>
+
+        <div class="render-section">
+            <h2><span class="emoji">🌀</span>第四节：条件与列表渲染</h2>
+            <p>使用 v-if 控制显示，v-for 渲染列表！</p>
+        </div>
+        
+        <div class="code-block">
+&lt;template&gt;
+  &lt;p v-if="loggedIn"&gt;欢迎回来，魔法师！&lt;/p&gt;
+  &lt;ul&gt;
+    &lt;li v-for="task in todos" :key="task.id"&gt;{{ task.name }}&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+        </div>
+
+        <div class="task">
+            <h3><span class="emoji">✨</span>小任务 · 构建 Todo List</h3>
+            <p>使用你学到的全部魔法，尝试实现以下功能：</p>
+            <ul>
+                <li>输入任务，点击"添加"按钮，任务显示在列表中</li>
+                <li>可以点击任务后面的"删除"按钮移除</li>
+                <li>数据响应式更新，无需刷新页面！</li>
+            </ul>
+        </div>
+
+        <div class="achievement">
+            <h2><span class="emoji">✅</span>今日成就 · Lv4 组件召唤师</h2>
+            <p>你今天完成了从 DOM 魔法到组件炼金术的飞跃，掌握了：</p>
+            <ul>
+                <li>Vue3 响应式 API 的基本用法</li>
+                <li>Vue 项目的结构与组织方式</li>
+                <li>Props / emits 跨组件通信法术</li>
+                <li>列表与条件渲染技巧</li>
+            </ul>
+            <p><span class="emoji">🌟</span>接下来，我们将进入另一个强大的前端世界 -- React 的魔法森林！🌲</p>
+        </div>
+    </div>
+
+    <!-- 术语库抽屉 -->
+    <div id="terminology-drawer" class="terminology-drawer">
+        <div class="drawer-overlay" id="drawer-overlay"></div>
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h2 class="drawer-title">📚 本地化术语库</h2>
+                <button id="close-drawer" class="close-btn">✕</button>
+            </div>
+            
+            <div class="drawer-search">
+                <div class="search-box">
+                    <input type="text" id="terminology-search" placeholder="搜索术语..." class="search-input">
+                    <button id="search-btn" class="search-btn">🔍</button>
+                </div>
+            </div>
+            
+            <div class="drawer-body">
+                <div id="terminology-loading" class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>加载术语库中...</p>
+                </div>
+                
+                <div id="terminology-list" class="terminology-list"></div>
+                
+                <div id="terminology-empty" class="empty-state" style="display: none;">
+                    <p>未找到相关术语</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 魔法粒子跟随鼠标效果
+            const particles = document.querySelectorAll('.magic-particle');
+            
+            document.addEventListener('mousemove', function(e) {
+                particles.forEach((particle, index) => {
+                    const delay = index * 50;
+                    setTimeout(() => {
+                        const x = e.clientX + Math.random() * 100 - 50;
+                        const y = e.clientY + Math.random() * 100 - 50;
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                    }, delay);
+                });
+            });
+            
+            // 代码块悬停效果
+            const codeBlocks = document.querySelectorAll('.code-block');
+            codeBlocks.forEach(block => {
+                block.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                });
+                
+                block.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                });
+            });
+            
+            // 导航栏滚动效果
+            let lastScrollTop = 0;
+            const navbar = document.querySelector('.nav-bar');
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > lastScrollTop) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+        });
+
+        // 术语库抽屉功能
+        class TerminologyDrawer {
+            constructor() {
+                this.drawer = document.querySelector('.terminology-drawer');
+                this.overlay = document.querySelector('.drawer-overlay');
+                this.closeBtn = document.querySelector('.close-btn');
+                this.searchInput = document.querySelector('.search-input');
+                this.searchBtn = document.querySelector('.search-btn');
+                this.terminologyList = document.querySelector('.terminology-list');
+                this.loadingState = document.querySelector('.loading-state');
+                this.emptyState = document.querySelector('.empty-state');
+                
+                this.bindEvents();
+                this.loadTerminologies();
+            }
+            
+            bindEvents() {
+                // 打开抽屉
+                document.querySelector('.terminology-btn').addEventListener('click', () => {
+                    this.openDrawer();
+                });
+                
+                // 关闭抽屉
+                this.closeBtn.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                this.overlay.addEventListener('click', () => {
+                    this.closeDrawer();
+                });
+                
+                // 搜索功能
+                this.searchBtn.addEventListener('click', () => {
+                    this.searchTerminologies();
+                });
+                
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchTerminologies();
+                    }
+                });
+            }
+            
+            openDrawer() {
+                this.drawer.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeDrawer() {
+                this.drawer.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+            
+            async loadTerminologies() {
+                this.showLoading();
+                
+                try {
+                    const response = await fetch('/api/terminology/list');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch terminologies');
+                    }
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.allTerminologies = data.terms || [];
+                        this.renderTerminologies(this.allTerminologies);
+                    } else {
+                        throw new Error(data.error || '获取术语失败');
+                    }
+                } catch (error) {
+                    console.error('加载术语失败:', error);
+                    this.showEmpty();
+                }
+            }
+            
+            async searchTerminologies() {
+                const query = this.searchInput.value.trim();
+                if (!query) {
+                    this.renderTerminologies(this.allTerminologies || []);
+                    return;
+                }
+                
+                try {
+                    this.showLoading();
+                    
+                    const response = await fetch(`/api/terminology/search?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) {
+                        throw new Error('Search failed');
+                    }
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        this.renderTerminologies(data.terms || []);
+                    } else {
+                        throw new Error(data.error || '搜索失败');
+                    }
+                } catch (error) {
+                    console.error('搜索术语失败:', error);
+                    this.showEmpty();
+                }
+            }
+            
+            renderTerminologies(terminologies) {
+                this.hideLoading();
+                this.hideEmpty();
+                
+                if (terminologies.length === 0) {
+                    this.showEmpty();
+                    return;
+                }
+                
+                this.terminologyList.innerHTML = terminologies.map(term => `
+                    <div class="terminology-item">
+                        <h3>${term.chinese} (${term.english})</h3>
+                        <p><strong>中文定义：</strong>${term.definition_chinese}</p>
+                        <p><strong>英文定义：</strong>${term.definition_english}</p>
+                    </div>
+                `).join('');
+            }
+            
+            showLoading() {
+                this.loadingState.style.display = 'flex';
+                this.terminologyList.style.display = 'none';
+                this.emptyState.style.display = 'none';
+            }
+            
+            hideLoading() {
+                this.loadingState.style.display = 'none';
+                this.terminologyList.style.display = 'block';
+            }
+            
+            showEmpty() {
+                this.emptyState.style.display = 'flex';
+                this.terminologyList.style.display = 'none';
+                this.loadingState.style.display = 'none';
+            }
+            
+            hideEmpty() {
+                this.emptyState.style.display = 'none';
+            }
+        }
+
+        // 初始化术语库
+        new TerminologyDrawer();
+    </script>
+</body>
+</html>

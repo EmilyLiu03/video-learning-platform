@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 7：项目整合 + 面试准备 - 成为真正的前端魔法师！</title>
+    <link rel="stylesheet" href="../assets/css/common.css">
+    <link rel="stylesheet" href="../assets/css/day7.css">
+    <!-- 登录验证脚本 -->
+    <script src="../js/auth-guard.js"></script>
+    <style>
+        /* Day-7 专用样式覆盖 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 80px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+        
+        .code-block, .code-example {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+        }
+        
+        .code-block:hover, .code-example:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .task {
+            background-color: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .achievement {
+            background-color: #f0f8ff;
+            border: 2px solid #4a90e2;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .core-magic, .learning-objectives {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .core-magic h3, .learning-objectives h2 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .section {
+            margin: 30px 0;
+        }
+        
+        .section-content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .concept-list {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .objectives-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .objective-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .objective-icon {
+            font-size: 1.2em;
+        }
+        
+        code {
+            background-color: #f1f3f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* 术语库按钮样式 */
+        .terminology-btn {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .terminology-btn:hover {
+            transform: translateY(-50%) translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 术语库抽屉样式 */
+        .terminology-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .terminology-drawer.open {
+            right: 0;
+        }
+        
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .terminology-drawer.open ~ .drawer-overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .drawer-header {
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .drawer-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .search-container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 25px;
+            font-size: 14px;
+            background: white;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .loading-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #666;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(102, 126, 234, 0.1);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .empty-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #888;
+            text-align: center;
+        }
+        
+        .empty-state p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .terminology-list {
+            display: block;
+        }
+        
+        .terminology-item {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .terminology-item:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .terminology-item h3 {
+            margin: 0 0 12px 0;
+            color: #2d3748;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        
+        .terminology-item p {
+            margin: 8px 0;
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .terminology-item strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            .terminology-drawer {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .terminology-btn {
+                right: 15px;
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body class="magic-bg">
+    <!-- 悬浮导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <div class="nav-left">
+                <div class="nav-wizard"></div>
+                <span class="nav-title">七天速成前端魔法师</span>
+            </div>
+            <div class="nav-right">
+                <a href="../index.html" class="nav-link">返回首页</a>
+                <a href="intro.html" class="nav-link">课程介绍</a>
+                <a href="day1.html" class="nav-link">Day 1</a>
+                <a href="day2.html" class="nav-link">Day 2</a>
+                <a href="day3.html" class="nav-link">Day 3</a>
+                <a href="day4.html" class="nav-link">Day 4</a>
+                <a href="day5.html" class="nav-link">Day 5</a>
+                <a href="day6.html" class="nav-link">Day 6</a>
+                <a href="playground.html" class="nav-link">Web演练场</a>
+                <button id="terminology-btn" class="nav-link terminology-btn">📚 术语库</button>
+                <a href="login.html" class="nav-link auth-link">登录</a>
+                <a href="signup.html" class="nav-link auth-link signup-btn">注册</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 魔法粒子效果 -->
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+        <div class="magic-particle"></div>
+
+        <h1><span class="emoji">🎓</span>Day 7：项目整合 + 面试准备 - 成为真正的前端魔法师！</h1>
+                
+                <p>恭喜你完成了六天的魔法修炼，今天我们将走出课堂，把所学技能整合为真正的作品，并为你的职业旅程做好准备！</p>
+
+                <!-- 学习目标 -->
+                <div class="learning-objectives">
+                    <h2>🔮 今日核心魔法</h2>
+                    <div class="objectives-list">
+                        <div class="objective-item">
+                            <span class="objective-icon">🛠️</span>
+                            <span class="objective-text">整合开发一个完整小项目（例如登录页 → 首页 → 编辑页）</span>
+                        </div>
+                        <div class="objective-item">
+                            <span class="objective-icon">🚀</span>
+                            <span class="objective-text">部署到线上平台（Netlify / Vercel）</span>
+                        </div>
+                        <div class="objective-item">
+                            <span class="objective-icon">📄</span>
+                            <span class="objective-text">作品展示 & 简历书写建议</span>
+                        </div>
+                        <div class="objective-item">
+                            <span class="objective-icon">🧠</span>
+                            <span class="objective-text">常见前端面试题回顾（选择题 + 实操）</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 课程章节 -->
+                <div class="course-sections">
+                    <div class="section">
+                        <h2 class="section-title">🛠️ 第一节：项目整合挑战</h2>
+                        <div class="section-content">
+                            <h3>🔧 项目示例：魔法笔记本 App</h3>
+                            <p><strong>页面结构建议：</strong></p>
+                            <ul class="concept-list">
+                                <li><strong>/login</strong>：模拟登录（任意用户名通过验证即可）</li>
+                                <li><strong>/home</strong>：展示已创建的笔记卡片，可切换深浅模式</li>
+                                <li><strong>/edit/:id</strong>：编辑单条笔记内容（使用路由参数）</li>
+                            </ul>
+                            
+                            <p><strong>使用技术栈（建议）：</strong></p>
+                            <ul class="concept-list">
+                                <li>Vue + Vue Router / React + React Router</li>
+                                <li>Tailwind CSS 快速布局</li>
+                                <li>本地状态或 localStorage 存储数据</li>
+                            </ul>
+
+                            <p><strong>✅ 最终项目应包括：</strong></p>
+                            <ul class="concept-list">
+                                <li>页面跳转逻辑</li>
+                                <li>表单输入与响应式样式</li>
+                                <li>样式美观、结构清晰、功能正常运行</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">🚀 第二节：部署上线</h2>
+                        <div class="section-content">
+                            <p>将你的项目展示给全世界，成为你简历上的高光！</p>
+                            
+                            <h3><strong>Netlify（适合 Vue / Vite）</strong></h3>
+                            <div class="code-example">
+                                <pre><code>npm run build</code></pre>
+                            </div>
+                            <p>• 上传 dist/ 目录到 Netlify 或使用 GitHub 一键部署</p>
+                            
+                            <h3><strong>Vercel（适合 React / Next）</strong></h3>
+                            <ul class="concept-list">
+                                <li>将项目 push 到 GitHub</li>
+                                <li>登录 vercel.com，导入项目自动部署</li>
+                            </ul>
+
+                            <p><strong>✨ 小提示：</strong></p>
+                            <ul class="concept-list">
+                                <li>记得设置 vite.config.js 的 base 路径（Netlify）</li>
+                                <li>设置 .env.production 文件隐藏敏感信息</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">📄 第三节：简历与作品展示建议</h2>
+                        <div class="section-content">
+                            <h3>🔍 简历小技巧：</h3>
+                            <ul class="concept-list">
+                                <li>展示项目链接 + 项目截图</li>
+                                <li>使用动词描述参与内容："独立开发"、"实现"、"优化"</li>
+                                <li>重点写你解决了什么问题、用了哪些技术</li>
+                            </ul>
+                            
+                            <h3>💼 作品展示页面建议：</h3>
+                            <ul class="concept-list">
+                                <li>项目名称 + 技术栈图标</li>
+                                <li>Demo 链接 + GitHub 地址</li>
+                                <li>核心亮点说明（如响应式布局、动态渲染、动画等）</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">🧠 第四节：前端面试回顾</h2>
+                        <div class="section-content">
+                            <h3>🎯 常见选择题复盘：</h3>
+                            
+                            <h3>🧱 HTML 面试问答</h3>
+                            <div class="code-example">
+                                <p><strong>Q1：HTML5 有哪些新特性？</strong></p>
+                                <p>A：<br>
+                                    • 语义化标签：&lt;header&gt;、&lt;section&gt;、&lt;article&gt;、&lt;footer&gt;<br>
+                                    • 多媒体标签：&lt;audio&gt;、&lt;video&gt;<br>
+                                    • 表单增强：&lt;input type="email"&gt;、&lt;datalist&gt;<br>
+                                    • 本地存储：localStorage、sessionStorage<br>
+                                    • 离线应用：AppCache（已废弃）
+                                </p>
+                            </div>
+
+                            <div class="code-example">
+                                <p><strong>Q2：&lt;script&gt; 标签中 defer 和 async 有什么区别？</strong></p>
+                                <p>A：<br>
+                                    • <strong>defer</strong>：脚本异步加载，但等 HTML 解析完再执行（顺序执行）<br>
+                                    • <strong>async</strong>：脚本异步加载并尽快执行，不保证顺序
+                                </p>
+                            </div>
+
+                            <h3>🎨 CSS 面试问答</h3>
+                            <div class="code-example">
+                                <p><strong>Q3：什么是盒模型？标准盒模型与 IE 盒模型的区别？</strong></p>
+                                <p>A：<br>
+                                    • 盒模型包括：content、padding、border、margin<br>
+                                    • <strong>标准模型</strong>：width = content<br>
+                                    • <strong>IE 模型</strong>：width = content + padding + border（可用 box-sizing: border-box 设置）
+                                </p>
+                            </div>
+
+                            <div class="code-example">
+                                <p><strong>Q4：position: relative 和 absolute 区别？</strong></p>
+                                <p>A：<br>
+                                    • <strong>relative</strong>：相对其原位置偏移，不脱离文档流<br>
+                                    • <strong>absolute</strong>：相对最近的非 static 定位父元素定位，脱离文档流
+                                </p>
+                            </div>
+
+                            <h3>🧠 JavaScript 面试问答</h3>
+                            <div class="code-example">
+                                <p><strong>Q5：什么是闭包？有什么应用？</strong></p>
+                                <p>A：闭包是指一个函数可以"记住"其定义时的作用域。常用于：<br>
+                                    • 数据私有化<br>
+                                    • 工厂函数<br>
+                                    • 实现缓存
+                                </p>
+                            </div>
+
+                            <div class="code-example">
+                                <p><strong>Q6：什么是原型链？</strong></p>
+                                <p>A：每个对象都有一个 __proto__ 指向其构造函数的 prototype，层层查找形成链条。用于继承与属性查找机制。</p>
+                            </div>
+
+                            <div class="code-example">
+                                <p><strong>Q7：浅拷贝 vs 深拷贝？如何实现深拷贝？</strong></p>
+                                <p>A：<br>
+                                    • <strong>浅拷贝</strong>：复制对象引用（如 Object.assign()）<br>
+                                    • <strong>深拷贝</strong>：完全复制数据结构<br>
+                                    • <strong>实现</strong>：使用 JSON.parse(JSON.stringify(obj)) 或递归拷贝
+                                </p>
+                            </div>
+
+                            <h3>⚛️ React 面试问答</h3>
+                            <div class="code-example">
+                                <p><strong>Q8：什么是 Hooks？为什么推荐使用函数组件？</strong></p>
+                                <p>A：Hooks 是在函数组件中使用状态、生命周期等功能的 API，如 useState、useEffect。<br>
+                                    函数组件更简洁、易测试、逻辑复用更方便（通过自定义 Hook）。</p>
+                            </div>
+
+                            <div class="code-example">
+                                <p><strong>Q9：父组件如何向子组件传递数据？子组件如何触发父组件函数？</strong></p>
+                                <p>A：<br>
+                                    • <strong>父传子</strong>：通过 Props<br>
+                                    • <strong>子触发父</strong>：通过回调函数传入 Props，在子组件中调用它
+                                </p>
+                            </div>
+
+                            <h3>🔥 Vue 面试问答</h3>
+                            <div class="code-example">
+                                <p><strong>Q10：Vue2 与 Vue3 的区别？</strong></p>
+                                <p>A：<br>
+                                    • Vue3 使用组合式 API（setup, ref, reactive）<br>
+                                    • 更好的性能，虚拟 DOM 重写<br>
+                                    • 支持 TypeScript 更好<br>
+                                    • Tree-shaking 更有效
+                                </p>
+                            </div>
+
+                            <h3>🧪 实操题示例：</h3>
+                            <ul class="concept-list">
+                                <li>写一个输入框，实时显示字数统计</li>
+                                <li>实现一个"展开/收起"的 FAQ 列表</li>
+                                <li>给一段代码找出 bug（比如闭包或作用域问题）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+        <div class="achievement">
+            <h2><span class="emoji">✅</span>今日成就 · Lv7 毕业魔法师</h2>
+            <p>你已经完成：</p>
+            <ul>
+                <li>从零构建一个完整功能的前端项目</li>
+                <li>掌握项目部署技巧，让作品"上线见人"</li>
+                <li>初步了解前端求职方向与面试题型</li>
+                <li>拥有了属于你的"前端魔法卷轴"作品集！</li>
+            </ul>
+            <p><span class="emoji">🎉</span>恭喜你完成了七天前端魔法师的修炼之旅！现在你已经具备了前端开发的核心技能，可以开始你的前端职业生涯了！</p>
+        </div>
+    </div>
+
+    <!-- 术语库抽屉 -->
+    <div id="terminology-drawer" class="terminology-drawer">
+        <div class="drawer-header">
+            <h2 class="drawer-title">术语库</h2>
+            <button class="close-btn" onclick="terminologyDrawer.close()">&times;</button>
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="搜索术语..." id="terminology-search">
+                <button class="search-btn" onclick="terminologyDrawer.search()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="drawer-body">
+            <div class="loading-state" id="terminology-loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <div>正在加载术语...</div>
+            </div>
+            <div class="terminology-list" id="terminology-list">
+                <div class="empty-state">
+                    点击搜索按钮开始查找术语
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="drawer-overlay" onclick="terminologyDrawer.close()"></div>
+
+    <!-- 装饰元素 -->
+    <div class="magic-book-decoration"></div>
+    <div class="star star-1"></div>
+    <div class="star star-2"></div>
+    <div class="star star-3"></div>
+
+    <!-- 滚动提示 -->
+    <div id="scroll-indicator" class="scroll-indicator">
+        向下滚动查看更多内容 ↓
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查登录状态
+            checkLoginStatus();
+            
+            // 魔法粒子跟随鼠标效果
+            const particles = document.querySelectorAll('.magic-particle');
+            
+            document.addEventListener('mousemove', function(e) {
+                particles.forEach((particle, index) => {
+                    const delay = index * 50;
+                    setTimeout(() => {
+                        const x = e.clientX + Math.random() * 100 - 50;
+                        const y = e.clientY + Math.random() * 100 - 50;
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                    }, delay);
+                });
+            });
+            
+            // 代码块悬停效果
+            const codeBlocks = document.querySelectorAll('.code-example');
+            codeBlocks.forEach(block => {
+                block.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                });
+                
+                block.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                });
+            });
+            
+            // 导航栏滚动效果
+            let lastScrollTop = 0;
+            const navbar = document.querySelector('.nav-bar');
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+
+            // 滚动提示控制
+            const scrollIndicator = document.getElementById('scroll-indicator');
+            const scrollableContent = document.querySelector('.scrollable-content');
+            
+            scrollableContent.addEventListener('scroll', function() {
+                if (this.scrollTop > 200) {
+                    scrollIndicator.style.opacity = '0';
+                } else {
+                    scrollIndicator.style.opacity = '0.8';
+                }
+            });
+            
+            // 术语库抽屉类
+            class TerminologyDrawer {
+                constructor() {
+                    this.drawer = document.getElementById('terminology-drawer');
+                    this.overlay = document.querySelector('.drawer-overlay');
+                    this.searchInput = document.getElementById('terminology-search');
+                    this.searchBtn = document.querySelector('.search-btn');
+                    this.terminologyList = document.getElementById('terminology-list');
+                    this.loadingState = document.querySelector('.loading-state');
+                    this.emptyState = document.querySelector('.empty-state');
+                    
+                    this.isOpen = false;
+                    this.allTerminologies = [];
+                    
+                    this.bindEvents();
+                    this.loadTerminologies();
+                }
+                
+                bindEvents() {
+                    // 打开抽屉
+                    document.getElementById('terminology-btn').addEventListener('click', () => {
+                        this.open();
+                    });
+                    
+                    // 关闭抽屉
+                    document.querySelector('.close-btn').addEventListener('click', () => {
+                        this.close();
+                    });
+                    
+                    // 点击遮罩关闭
+                    this.overlay.addEventListener('click', () => {
+                        this.close();
+                    });
+                    
+                    // 搜索功能
+                    this.searchBtn.addEventListener('click', () => {
+                        this.search();
+                    });
+                    
+                    this.searchInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.search();
+                        }
+                    });
+                    
+                    // ESC键关闭
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && this.isOpen) {
+                            this.close();
+                        }
+                    });
+                }
+                
+                open() {
+                    this.drawer.classList.add('open');
+                    this.overlay.style.display = 'block';
+                    this.isOpen = true;
+                    document.body.style.overflow = 'hidden';
+                }
+                
+                close() {
+                    this.drawer.classList.remove('open');
+                    this.overlay.style.display = 'none';
+                    this.isOpen = false;
+                    document.body.style.overflow = 'auto';
+                }
+                
+                async loadTerminologies() {
+                    this.showLoading();
+                    
+                    try {
+                        const response = await fetch('/api/terminology/list');
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch terminologies');
+                        }
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.allTerminologies = data.terms || [];
+                            this.hideLoading();
+                            this.renderTerminologies(this.allTerminologies);
+                        } else {
+                            throw new Error(data.error || '获取术语失败');
+                        }
+                    } catch (error) {
+                        console.error('Error loading terminologies:', error);
+                        this.hideLoading();
+                        this.showEmpty();
+                    }
+                }
+                
+                async search() {
+                    const query = this.searchInput.value.trim();
+                    
+                    if (!query) {
+                        this.renderTerminologies(this.allTerminologies || []);
+                        return;
+                    }
+                    
+                    try {
+                        this.showLoading();
+                        
+                        const response = await fetch(`/api/terminology/search?q=${encodeURIComponent(query)}`);
+                        if (!response.ok) {
+                            throw new Error('Search failed');
+                        }
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.hideLoading();
+                            this.renderTerminologies(data.terms || []);
+                        } else {
+                            throw new Error(data.error || '搜索失败');
+                        }
+                    } catch (error) {
+                        console.error('搜索术语失败:', error);
+                        this.hideLoading();
+                        this.showEmpty();
+                    }
+                }
+                
+                renderTerminologies(terminologies) {
+                    if (terminologies.length === 0) {
+                        this.showEmpty();
+                        return;
+                    }
+                    
+                    this.hideEmpty();
+                    
+                    const html = terminologies.map(item => `
+                        <div class="terminology-item">
+                            <h3>${item.chinese} (${item.english})</h3>
+                            <p><strong>中文定义：</strong>${item.chineseDefinition}</p>
+                            <p><strong>英文定义：</strong>${item.englishDefinition}</p>
+                        </div>
+                    `).join('');
+                    
+                    this.terminologyList.innerHTML = html;
+                }
+                
+                showLoading() {
+                    this.loadingState.style.display = 'flex';
+                    this.terminologyList.style.display = 'none';
+                    this.emptyState.style.display = 'none';
+                }
+                
+                hideLoading() {
+                    this.loadingState.style.display = 'none';
+                    this.terminologyList.style.display = 'block';
+                }
+                
+                showEmpty() {
+                    this.emptyState.style.display = 'flex';
+                    this.terminologyList.style.display = 'none';
+                }
+                
+                hideEmpty() {
+                    this.emptyState.style.display = 'none';
+                    this.terminologyList.style.display = 'block';
+                }
+            }
+            
+            // 初始化术语库抽屉
+            let terminologyDrawer;
+            terminologyDrawer = new TerminologyDrawer();
+        });
+    </script>
+</body>
+</html>
